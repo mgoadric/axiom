@@ -1,3 +1,5 @@
+import java.util.*;
+
 /*
  *      Cube.java
  *      
@@ -66,6 +68,7 @@ public class Cube {
 	if (this.occupied()) {
 	    // add sceptres
 	}
+	return c;
     }
 
     public int firstDome() {
@@ -97,7 +100,7 @@ public class Cube {
         return false;
     }
     
-    public int removeSceptre(int f/*, int x */) {
+    public int removeSceptre(int f) {
         if (faces[f] == WHITE || faces[f] == BLACK) {
             int temp = faces[f];
             faces[f] = EMPTY;
