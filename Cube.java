@@ -2,7 +2,7 @@ import java.util.*;
 
 /*
  *      Cube.java
- *      
+ *      making a test comment
  */
 
 
@@ -44,51 +44,51 @@ public class Cube {
     }
     
     public void setBoard(HashMap<String, Cube> b) {
-	this.board = b;
+    this.board = b;
     }
 
     public int getFace(int f) {
-	return faces[f];
+    return faces[f];
     }
     
     public int getX() {
-	return location[X];
+    return location[X];
     }
 
     public int getY() {
-	return location[Y];
+    return location[Y];
     }
 
     public int getZ() {
-	return location[Z];
+    return location[Z];
     }
 
     public Cube clone() {
-	Cube c = new Cube(location[X], location[Y], location[Z], firstDome(), secondDome(), color);
-	if (this.occupied()) {
-	    // add sceptres
-	}
-	return c;
+    Cube c = new Cube(location[X], location[Y], location[Z], firstDome(), secondDome(), color);
+    if (this.occupied()) {
+        // add sceptres
+    }
+    return c;
     }
 
     public int firstDome() {
-	for (int i = 0; i < faces.length; i++) {
-	    if (faces[i] == DOME) {
-		return i;
-	    }
-	}
-	// should NEVER happen
-	System.err.println("UHOH!!!");
-	return NONE;
+    for (int i = 0; i < faces.length; i++) {
+        if (faces[i] == DOME) {
+        return i;
+        }
+    }
+    // should NEVER happen
+    System.err.println("UHOH!!!");
+    return NONE;
     }
 
     public int secondDome() {
-	for (int i = firstDome() + 1; i < faces.length; i++) {
-	    if (faces[i] == DOME) {
-		return i;
-	    }
-	}
-	return NONE;
+    for (int i = firstDome() + 1; i < faces.length; i++) {
+        if (faces[i] == DOME) {
+        return i;
+        }
+    }
+    return NONE;
     }
 
     // Methods
@@ -116,66 +116,66 @@ public class Cube {
                 return true;           
             }
             if (faces[i] == BLACK && color == WHITE) {
-		return true;
-	    }
-	}
-	return false;
+        return true;
+        }
+    }
+    return false;
     }
     
     public boolean occupied() {
-	for (int i = 0; i < faces.length; i++) {
-	    if (faces[i] == WHITE || faces[i] == BLACK) {
-		return false;
-	    }
-	}
-	return true;
+    for (int i = 0; i < faces.length; i++) {
+        if (faces[i] == WHITE || faces[i] == BLACK) {
+        return false;
+        }
+    }
+    return true;
     }
 
     public boolean isFree() {
-	if (occupied()) {
-	    return false;
-	}
-	String above = "" + location[X] + ", " + location[Y] + ", " + (location[Z] + 1);
-	if (board.get(above) == null) {
-	    return true;
-	}
-	return false;
+    if (occupied()) {
+        return false;
+    }
+    String above = "" + location[X] + ", " + location[Y] + ", " + (location[Z] + 1);
+    if (board.get(above) == null) {
+        return true;
+    }
+    return false;
     }
 
     public boolean twoSceptreSameColor() {
-	int first = EMPTY;
-	int second = EMPTY;
-	for (int i = 0; i < faces.length; i++) {
-	    if (faces[i] == WHITE || faces[i] == BLACK) {
-		if (first == EMPTY) {
-		    first = faces[i];
-		} else {
-		    second = faces[i];
-		}
-	    }
-	}
-	if (first != EMPTY) {
-	    return first == second;
-	}
-	return false;
+    int first = EMPTY;
+    int second = EMPTY;
+    for (int i = 0; i < faces.length; i++) {
+        if (faces[i] == WHITE || faces[i] == BLACK) {
+        if (first == EMPTY) {
+            first = faces[i];
+        } else {
+            second = faces[i];
+        }
+        }
+    }
+    if (first != EMPTY) {
+        return first == second;
+    }
+    return false;
     }
 
     public boolean twoSceptreDifferentColor() {
-	int first = EMPTY;
-	int second = EMPTY;
-	for (int i = 0; i < faces.length; i++) {
-	    if (faces[i] == WHITE || faces[i] == BLACK) {
-		if (first == EMPTY) {
-		    first = faces[i];
-		} else {
-		    second = faces[i];
-		}
-	    }
-	}
-	if (first != EMPTY && second != EMPTY) {
-	    return first != second;
-	}
-	return false;
+    int first = EMPTY;
+    int second = EMPTY;
+    for (int i = 0; i < faces.length; i++) {
+        if (faces[i] == WHITE || faces[i] == BLACK) {
+        if (first == EMPTY) {
+            first = faces[i];
+        } else {
+            second = faces[i];
+        }
+        }
+    }
+    if (first != EMPTY && second != EMPTY) {
+        return first != second;
+    }
+    return false;
 
     }
     
@@ -189,7 +189,7 @@ public class Cube {
     public static void main (String args[]) {
         HashMap<String, Cube> b = new HashMap<String, Cube>();
         Cube stuff = new Cube(-1, 0, 2, XUP, NONE, BLACK);
-	stuff.setBoard(b);
+    stuff.setBoard(b);
         b.put("-1, 0, 2", stuff);
         
      }
