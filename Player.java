@@ -28,6 +28,10 @@ public class Player {
         return "" + this.num;
     }    
     
+    public int getNum() {
+    	return num;
+    }
+    
    	public int minimaxMove(BoardGame board, int ply ) {
         // Choose the best minimax move.  Returns (move, val) 
         int move = -1;
