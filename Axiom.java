@@ -4,7 +4,7 @@
  */
 
 
-public class Axiom {
+public class Axiom implements BoardGame{
 
 	// data members
 	
