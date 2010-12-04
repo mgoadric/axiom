@@ -139,8 +139,10 @@ public class Axiom implements BoardGame{
     public String showMoves(Player p) {
 		movesCheck(p);
     	String s = "";
+    	int i = 0;
     	for (String tm : moves) {
-    		s += tm + "\n";
+    		s += i + ": " + tm + "\n";
+    		i++;
     	}
     	return s;
     }
