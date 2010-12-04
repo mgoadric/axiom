@@ -6,24 +6,24 @@ import java.util.*;
 
 public class Player {
 
-	public static Scanner sc = new Scanner(System.in);
+    public static Scanner sc = new Scanner(System.in);
 
-	// Constants
-	public static int HUMAN = 0;
+    // Constants
+    public static int HUMAN = 0;
     public static int RANDOM = 1;
     public static int MINIMAX = 2;
     public static int ABPRUNE = 3;
     public static int CUSTOM = 4;
 
-	// Data Members
-	private int num;
-	private int opp;
-	private int type;
-	private int ply;
-	private int nodes;
+    // Data Members
+    private int num;
+    private int opp;
+    private int type;
+    private int ply;
+    private int nodes;
 
-	// Constructor    
-	public Player(int playerNum, int oppNum, int playerType, int ply) {
+    // Constructor    
+    public Player(int playerNum, int oppNum, int playerType, int ply) {
         this.num = playerNum;
         this.opp = oppNum;
         this.type = playerType;
@@ -31,16 +31,16 @@ public class Player {
         this.nodes = 0;
     }
 
-	// Methods
+    // Methods
     public String toString() {
         return "" + this.num;
     }    
     
     public int getNum() {
-    	return num;
+        return num;
     }
     
-   	public int minimaxMove(BoardGame board, int ply ) {
+    public int minimaxMove(BoardGame board, int ply ) {
         // Choose the best minimax move.  Returns (move, val) 
         int move = -1;
         int score = Integer.MIN_VALUE;
@@ -51,7 +51,7 @@ public class Player {
             }
             if (board.gameOver()) {
                 return -1;  // Can't make a move, the game is over
-			}
+            }
             BoardGame nb = (BoardGame)board.clone();
             nb.makeMove(this, m);
             Player opp = new Player(this.opp, this.num, this.type, this.ply);
@@ -69,14 +69,14 @@ public class Player {
         //    at a given board configuation
         //    Returns (score, oppMove)
         if (board.gameOver()) {
-        	int[] t = {turn.score(board), -1};
-        	return t;
+            int[] t = {turn.score(board), -1};
+            return t;
         }
-		int[] s = {Integer.MIN_VALUE, -1};
+        int[] s = {Integer.MIN_VALUE, -1};
         for (Integer m : board.legalMoves( this )) {
             if (ply == 0) {
-            	s[0] = turn.score(board);
-            	s[1] = m;
+                s[0] = turn.score(board);
+                s[1] = m;
                 return s;
             }
 
@@ -100,14 +100,14 @@ public class Player {
         // Find the minimax value for the next move for this player
         //    at a given board configuation
         if (board.gameOver()) {
-        	int[] t = {turn.score(board), -1};
-        	return t;
+            int[] t = {turn.score(board), -1};
+            return t;
         }
         int[] s = {Integer.MAX_VALUE, -1};
         for (Integer m : board.legalMoves( this )) {
             if (ply == 0) {
-            	s[0] = turn.score(board);
-            	s[1] = m;
+                s[0] = turn.score(board);
+                s[1] = m;
                 return s;
             }
             // make a new player to play the other side
@@ -137,7 +137,7 @@ public class Player {
         } else {
             return 50;
         }
-	}
+    }
 
 
 /*
@@ -304,28 +304,28 @@ public class Player {
         // Returns the next move that this player wants to make
         int move = -1;
         if (type == HUMAN) {
-        	System.out.println("Please enter your move:");
+            System.out.println("Please enter your move:");
             move = sc.nextInt();
             while (!board.legalMove(this, move)) {
                 System.out.println("" + move + "is not valid");
-	        	System.out.println("Please enter your move:");
+                System.out.println("Please enter your move:");
                 move = sc.nextInt();
             }
         } else if (type == RANDOM) {
-        	ArrayList<Integer> t = board.legalMoves(this);
+            ArrayList<Integer> t = board.legalMoves(this);
             move = t.get((int)(Math.random() * t.size()));
             System.out.println("chose move" + move);
         } else if (type == MINIMAX) {
             move = minimaxMove( board, ply );
             System.out.println("chose move" + move);
 //        } else if (this.type == this.ABPRUNE) {
-//            move = this.alphaBetaMove( board, this.ply)
+//            move = this.alphaBetaMove( board, this.ply);
 //            System.out.println("chose move" + move);
         } else if (type == CUSTOM) {
             System.out.println("Custom player not yet implemented");
         } else {
             System.out.println("Unknown player type");
-		}
-		return move;
-	}
+        }
+        return move;
+    }
 } 

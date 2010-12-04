@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Cube {
 
-	// Constants
+    // Constants
     public static int X = 0;
     public static int Y = 1;
     public static int Z = 2;
@@ -38,11 +38,11 @@ public class Cube {
         location[Z] = z;
         faces = new int[6];
         for (int i = 0; i < faces.length; i++) {
-        	if (i == d1 || i == d2) {
-        		faces[i] = DOME;
-        	} else {
-        		faces[i] = EMPTY;
-        	}
+            if (i == d1 || i == d2) {
+                faces[i] = DOME;
+            } else {
+                faces[i] = EMPTY;
+            }
         }
         this.color = color;
     }
@@ -52,10 +52,14 @@ public class Cube {
     }
 
     public int getFace(int f) {
-    	if (f == NONE) {
-    		return NONE;
-    	}
+        if (f == NONE) {
+            return NONE;
+        }
         return faces[f];
+    }
+    
+    public String getName() {
+        return "" + getX() + ", " + getY() + ", " + getZ();
     }
     
     public int getX() {
@@ -98,27 +102,27 @@ public class Cube {
         return NONE;
     }
 
-	public int firstSceptre() {
-		for (int i = 0; i < faces.length; i++) {
-			if (faces[i] == BLACK || faces[i] == WHITE) {
-				return i;
-			}
-		}
+    public int firstSceptre() {
+        for (int i = 0; i < faces.length; i++) {
+            if (faces[i] == BLACK || faces[i] == WHITE) {
+                return i;
+            }
+        }
         return NONE;
-	}
-	
-	public int secondSceptre() {
-		int f = firstSceptre();
-		if (f == NONE) {
-			return NONE;
-		}
-		for (int i = f + 1; i < faces.length; i++) {
-			if (faces[i] == BLACK || faces[i] == WHITE) {
-				return i;
-			}
-		}
-		return NONE;
-	}
+    }
+    
+    public int secondSceptre() {
+        int f = firstSceptre();
+        if (f == NONE) {
+            return NONE;
+        }
+        for (int i = f + 1; i < faces.length; i++) {
+            if (faces[i] == BLACK || faces[i] == WHITE) {
+                return i;
+            }
+        }
+        return NONE;
+    }
 
     public boolean addSceptre(int f, int color) {
         if (f != NONE && isEmpty(f)) {
@@ -136,11 +140,6 @@ public class Cube {
             return temp;
         }
         return -1;
-    }
-    
-    public void rotate(int d) {
-    	// JMARTIN2 TO DO
-    	// ROTATE THE CUBE IN DIRECTION d
     }
     
     public boolean isEncroached() {
@@ -169,8 +168,8 @@ public class Cube {
             return false;
         }
         String above = "" + location[X] + ", " + 
-        					location[Y] + ", " + 
-        					(location[Z] + 1);
+                            location[Y] + ", " + 
+                            (location[Z] + 1);
         if (board.get(above) == null) {
             return true;
         }
@@ -199,11 +198,28 @@ public class Cube {
         return faces[f] == EMPTY;
     }
     
+    // JMARTIN2 TODO
+    // Rotate the cube in the direction d, being one of X, Y or Z
+    public void rotate(int d) {
+    }
+    
+    // JMARTIN2 TODO
+    // Use the notation from the play by email paper
+    public String toString() {
+        return null;
+    }
+    
+    // JMARTIN2 TODO
+    // Use the notation from the play by email paper
+    public String toSceptreString(int f) {
+        return null;
+    }
+    
     public static void main (String args[]) {
         HashMap<String, Cube> b = new HashMap<String, Cube>();
         Cube stuff = new Cube(-1, 0, 2, XUP, NONE, BLACK);
         stuff.addSceptre(ZUP, BLACK);
         stuff.setBoard(b);
-        b.put("-1, 0, 2", stuff);
+        b.put(stuff.getName(), stuff);
      }
 }
