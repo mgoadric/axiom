@@ -304,6 +304,7 @@ public class Player {
         // Returns the next move that this player wants to make
         int move = -1;
         if (type == HUMAN) {
+        	System.out.println(board.showMoves(this));
             System.out.println("Please enter your move:");
             move = sc.nextInt();
             while (!board.legalMove(this, move)) {
