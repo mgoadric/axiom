@@ -1,5 +1,11 @@
 import java.util.*;
 
+/********
+ * General Interface for a BoardGame object
+ * will let us perform minimiax search and
+ * alpha-beta pruning
+ ********/
+
 public interface BoardGame {
 
 	public boolean gameOver();

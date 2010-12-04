@@ -8,13 +8,14 @@ import java.util.*;
 
 public class Cube {
 
+	// Constants
     public static int X = 0;
     public static int Y = 1;
     public static int Z = 2;
-    public static int BLACK = 3;
-    public static int WHITE = 2;
-    public static int EMPTY = 0;
-    public static int DOME = 1;
+    public static int BLACK = 0;
+    public static int WHITE = 1;
+    public static int EMPTY = 2;
+    public static int DOME = 3;
     public static int XUP = 0;
     public static int XDOWN = 1;
     public static int YUP = 2;
@@ -36,64 +37,91 @@ public class Cube {
         location[Y] = y;
         location[Z] = z;
         faces = new int[6];
-        faces[d1] = DOME;
-        if (d2 != -1) {
-            faces[d2] = DOME;
+        for (int i = 0; i < faces.length; i++) {
+        	if (i == d1 || i == d2) {
+        		faces[i] = DOME;
+        	} else {
+        		faces[i] = EMPTY;
+        	}
         }
         this.color = color;
     }
     
     public void setBoard(HashMap<String, Cube> b) {
-    this.board = b;
+        this.board = b;
     }
 
     public int getFace(int f) {
-    return faces[f];
+    	if (f == NONE) {
+    		return NONE;
+    	}
+        return faces[f];
     }
     
     public int getX() {
-    return location[X];
+        return location[X];
     }
 
     public int getY() {
-    return location[Y];
+        return location[Y];
     }
 
     public int getZ() {
-    return location[Z];
+        return location[Z];
     }
 
     public Cube clone() {
-    Cube c = new Cube(location[X], location[Y], location[Z], firstDome(), secondDome(), color);
-    if (this.occupied()) {
-        // add sceptres
-    }
-    return c;
+        Cube c = new Cube(location[X], location[Y], location[Z], firstDome(), secondDome(), color);
+        if (addSceptre(firstSceptre(), getFace(firstSceptre()))) {
+            addSceptre(secondSceptre(), getFace(secondSceptre()));
+        }
+        return c;
     }
 
     public int firstDome() {
-    for (int i = 0; i < faces.length; i++) {
-        if (faces[i] == DOME) {
-        return i;
+        for (int i = 0; i < faces.length; i++) {
+            if (faces[i] == DOME) {
+                return i;
+            }
         }
-    }
-    // should NEVER happen
-    System.err.println("UHOH!!!");
-    return NONE;
+        // should NEVER happen
+        System.err.println("UHOH!!!");
+        return NONE;
     }
 
     public int secondDome() {
-    for (int i = firstDome() + 1; i < faces.length; i++) {
-        if (faces[i] == DOME) {
-        return i;
+        for (int i = firstDome() + 1; i < faces.length; i++) {
+            if (faces[i] == DOME) {
+                return i;
+            }
         }
-    }
-    return NONE;
+        return NONE;
     }
 
-    // Methods
+	public int firstSceptre() {
+		for (int i = 0; i < faces.length; i++) {
+			if (faces[i] == BLACK || faces[i] == WHITE) {
+				return i;
+			}
+		}
+        return NONE;
+	}
+	
+	public int secondSceptre() {
+		int f = firstSceptre();
+		if (f == NONE) {
+			return NONE;
+		}
+		for (int i = f + 1; i < faces.length; i++) {
+			if (faces[i] == BLACK || faces[i] == WHITE) {
+				return i;
+			}
+		}
+		return NONE;
+	}
+
     public boolean addSceptre(int f, int color) {
-        if (isEmpty(f)) {
+        if (f != NONE && isEmpty(f)) {
             faces[f] = color;
             return true;
         }
@@ -110,87 +138,72 @@ public class Cube {
         return -1;
     }
     
-    public boolean encroach() {
+    public void rotate(int d) {
+    	// JMARTIN2 TO DO
+    	// ROTATE THE CUBE IN DIRECTION d
+    }
+    
+    public boolean isEncroached() {
         for (int i = 0; i < faces.length; i++) {
             if (faces[i] == WHITE && color == BLACK) {
                 return true;           
             }
             if (faces[i] == BLACK && color == WHITE) {
-        return true;
+                return true;
+            }
         }
-    }
-    return false;
+        return false;
     }
     
-    public boolean occupied() {
-    for (int i = 0; i < faces.length; i++) {
-        if (faces[i] == WHITE || faces[i] == BLACK) {
-        return false;
+    public boolean isOccupied() {
+        for (int i = 0; i < faces.length; i++) {
+            if (faces[i] == WHITE || faces[i] == BLACK) {
+                return false;
+            }
         }
-    }
-    return true;
+        return true;
     }
 
     public boolean isFree() {
-    if (occupied()) {
-        return false;
-    }
-    String above = "" + location[X] + ", " + location[Y] + ", " + (location[Z] + 1);
-    if (board.get(above) == null) {
-        return true;
-    }
-    return false;
-    }
-
-    public boolean twoSceptreSameColor() {
-    int first = EMPTY;
-    int second = EMPTY;
-    for (int i = 0; i < faces.length; i++) {
-        if (faces[i] == WHITE || faces[i] == BLACK) {
-        if (first == EMPTY) {
-            first = faces[i];
-        } else {
-            second = faces[i];
+        if (isOccupied()) {
+            return false;
         }
-        }
-    }
-    if (first != EMPTY) {
-        return first == second;
-    }
-    return false;
-    }
-
-    public boolean twoSceptreDifferentColor() {
-    int first = EMPTY;
-    int second = EMPTY;
-    for (int i = 0; i < faces.length; i++) {
-        if (faces[i] == WHITE || faces[i] == BLACK) {
-        if (first == EMPTY) {
-            first = faces[i];
-        } else {
-            second = faces[i];
-        }
-        }
-    }
-    if (first != EMPTY && second != EMPTY) {
-        return first != second;
-    }
-    return false;
-
-    }
-    
-    public boolean isEmpty(int f) {
-        if(faces[f] == EMPTY) {
+        String above = "" + location[X] + ", " + 
+        					location[Y] + ", " + 
+        					(location[Z] + 1);
+        if (board.get(above) == null) {
             return true;
         }
         return false;
+    }
+
+    public boolean twoSceptreSameColor() {
+        int first = getFace(firstSceptre());
+        int second = getFace(secondSceptre());
+        if (first != NONE) {
+            return first == second;
+        }
+        return false;
+    }
+
+    public boolean twoSceptreDifferentColor() {
+        int first = getFace(firstSceptre());
+        int second = getFace(secondSceptre());
+        if (first != NONE && second != NONE) {
+            return first != second;
+        }
+        return false;
+    }
+    
+    public boolean isEmpty(int f) {
+        return faces[f] == EMPTY;
     }
     
     public static void main (String args[]) {
         HashMap<String, Cube> b = new HashMap<String, Cube>();
         Cube stuff = new Cube(-1, 0, 2, XUP, NONE, BLACK);
-    stuff.setBoard(b);
+        stuff.addSceptre(ZUP, BLACK);
+        stuff.setBoard(b);
         b.put("-1, 0, 2", stuff);
-        
      }
 }

@@ -1,29 +1,37 @@
 import java.util.*;
 
+/**
+ * Translated from the original python written by Christine Alvorado
+ */
+
 public class Player {
 
 	public static Scanner sc = new Scanner(System.in);
 
+	// Constants
 	public static int HUMAN = 0;
     public static int RANDOM = 1;
     public static int MINIMAX = 2;
     public static int ABPRUNE = 3;
     public static int CUSTOM = 4;
 
+	// Data Members
 	private int num;
 	private int opp;
 	private int type;
 	private int ply;
 	private int nodes;
-    
-	public Player(int playerNum, int playerType, int ply) {
+
+	// Constructor    
+	public Player(int playerNum, int oppNum, int playerType, int ply) {
         this.num = playerNum;
-        this.opp = 2 - playerNum + 1;
+        this.opp = oppNum;
         this.type = playerType;
         this.ply = ply;
         this.nodes = 0;
     }
 
+	// Methods
     public String toString() {
         return "" + this.num;
     }    
@@ -46,7 +54,7 @@ public class Player {
 			}
             BoardGame nb = (BoardGame)board.clone();
             nb.makeMove(this, m);
-            Player opp = new Player(this.opp, this.type, this.ply);
+            Player opp = new Player(this.opp, this.num, this.type, this.ply);
             int s[] = opp.minValue(nb, ply-1, turn);
             if (s[0] > score) {
                 move = s[1];
@@ -71,10 +79,13 @@ public class Player {
             	s[1] = m;
                 return s;
             }
+
             // make a new player to play the other side
-            Player opponent = new Player(this.opp, this.type, this.ply);
+            Player opponent = new Player(this.opp, this.num, this.type, this.ply);
+
             // Copy the board so that we don't ruin it
             BoardGame nextBoard = (BoardGame)board.clone();
+
             nextBoard.makeMove( this, m );
             int[] s2 = opponent.minValue(nextBoard, ply-1, turn);
             if (s2[0] > s[0]) {
@@ -100,7 +111,7 @@ public class Player {
                 return s;
             }
             // make a new player to play the other side
-            Player opponent = new Player(this.opp, this.type, this.ply);
+            Player opponent = new Player(this.opp, this.num, this.type, this.ply);
             // Copy the board so that we don't ruin it
             BoardGame nextBoard = (BoardGame)board.clone();
             nextBoard.makeMove( this, m );
@@ -292,7 +303,7 @@ public class Player {
     public int chooseMove(BoardGame board) {
         // Returns the next move that this player wants to make
         int move = -1;
-        if (this.type == this.HUMAN) {
+        if (type == HUMAN) {
         	System.out.println("Please enter your move:");
             move = sc.nextInt();
             while (!board.legalMove(this, move)) {
@@ -300,17 +311,17 @@ public class Player {
 	        	System.out.println("Please enter your move:");
                 move = sc.nextInt();
             }
-        } else if (this.type == this.RANDOM) {
+        } else if (type == RANDOM) {
         	ArrayList<Integer> t = board.legalMoves(this);
             move = t.get((int)(Math.random() * t.size()));
             System.out.println("chose move" + move);
-        } else if (this.type == this.MINIMAX) {
-            move = this.minimaxMove( board, this.ply );
+        } else if (type == MINIMAX) {
+            move = minimaxMove( board, ply );
             System.out.println("chose move" + move);
 //        } else if (this.type == this.ABPRUNE) {
 //            move = this.alphaBetaMove( board, this.ply)
 //            System.out.println("chose move" + move);
-        } else if (this.type == this.CUSTOM) {
+        } else if (type == CUSTOM) {
             System.out.println("Custom player not yet implemented");
         } else {
             System.out.println("Unknown player type");
