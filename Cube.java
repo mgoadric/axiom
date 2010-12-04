@@ -157,10 +157,10 @@ public class Cube {
     public boolean isOccupied() {
         for (int i = 0; i < faces.length; i++) {
             if (faces[i] == WHITE || faces[i] == BLACK) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public boolean isFree() {

@@ -1,3 +1,6 @@
+/**
+ * Hosts a game between two players
+ */
 public class Host {
     
     public static void hostGame(BoardGame game, Player player1, Player player2) {
@@ -16,7 +19,7 @@ public class Host {
             waitPlayer = temp;
         }
 
-        // Someone just won the game!
+        // Someone just won the game! Tell us please!
         System.out.println(game);
         if (game.hasWon(currPlayer.getNum())) {
             System.out.println("Player" + currPlayer + " wins!");

@@ -18,6 +18,8 @@ public interface BoardGame {
     
     public boolean legalMove(Player p, int m);
 
+	public String showMoves(Player p);
+
     public BoardGame clone();
 
 }
