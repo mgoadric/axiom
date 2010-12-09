@@ -59,7 +59,7 @@ public class Cube {
     }
     
     public String getName() {
-        return "" + getX() + ", " + getY() + ", " + getZ();
+        return "" + getX() + "," + getY() + "," + getZ();
     }
     
     public int getX() {
@@ -201,18 +201,141 @@ public class Cube {
     // JMARTIN2 TODO
     // Rotate the cube in the direction d, being one of X, Y or Z
     public void rotate(int d) {
+        if (d == Y) {
+            int temp = faces[XUP];
+            faces[XUP] = faces[ZUP];
+            faces[ZUP] = faces[XDOWN];
+            faces[XDOWN] = faces[ZDOWN];
+            faces[ZDOWN] = temp;
+        }
+        else if (d == X) {
+            int temp = faces[YUP];
+            faces[YUP] = faces[ZUP];
+            faces[ZUP] = faces[YDOWN];
+            faces[YDOWN] = faces[ZDOWN];
+            faces[ZDOWN] = temp;       
+        }
+        else if (d == Z) {
+            int temp = faces[XUP];
+            faces[XUP] = faces[YDOWN];
+            faces[YDOWN] = faces[XDOWN];
+            faces[XDOWN] = faces[YUP];
+            faces[YUP] = temp;
+            }
     }
-    
     // JMARTIN2 TODO
     // Use the notation from the play by email paper
     public String toString() {
-        return null;
+        String c = "C (" + getX() + "," + getY() + "," + getZ() + ")";
+        int fd = firstDome();
+        if (fd == XUP) {
+            c += "x+";
+        }
+        else if (fd == XDOWN) {
+            c += "x-";
+        }
+        else if (fd == YUP) {
+            c += "y+";
+        }
+        else if (fd == YDOWN) {
+            c += "y-";
+        }
+        else if (fd == ZUP) {
+            c += "z+";
+        }
+        else if (fd == ZDOWN) {
+            c += "z-";
+        }
+        if (secondDome() != NONE) {
+            int sd = secondDome();
+            if (sd == XUP) {
+                c += " x+";
+            }
+            else if (sd == XDOWN) {
+                c += " x-";
+            }
+            else if (sd == YUP) {
+                c += " y+";
+            }
+            else if (sd == YDOWN) {
+                c += " y-";
+            }
+            else if (sd == ZUP) {
+               c += " z+";
+            }
+            else if (sd == ZDOWN) {
+                c += " z-";
+            }
+        }
+        if (color == WHITE) {
+            c += " (white) ";
+        } else {
+            c += " (black) ";
+        }
+
+        return c;
     }
     
     // JMARTIN2 TODO
     // Use the notation from the play by email paper
-    public String toSceptreString(int f) {
-        return null;
+    public String toSceptreString() {
+        String t = "";
+        String s = "S (" + getX() + "," + getY() + "," + getZ() + ")";
+        if (firstSceptre() != NONE) {
+            t += s;
+            int fs = firstSceptre();
+            if (fs == XUP) {
+                t += "x+";
+            }
+            else if (fs == XDOWN) {
+                t += "x-";
+            }
+            else if (fs == YUP) {
+                t += "y+";
+            }
+            else if (fs == YDOWN) {
+                t += "y-";
+            }
+            else if (fs == ZUP) {
+                t += "z+";
+            }
+            else if (fs == ZDOWN) {
+                t += "z-";
+            }
+            if (getFace(firstSceptre()) == WHITE) {
+                t += " (white) ";
+            } else {
+                t += " (black) ";
+            }
+            if (secondSceptre() != NONE) {
+                t += "\n" + s;
+                int ss = secondSceptre();
+                if (ss == XUP) {
+                    t += " x+";
+                }
+                else if (ss == XDOWN) {
+                    t += " x-";
+                }
+                else if (ss == YUP) {
+                    t += " y+";
+                }
+                else if (ss == YDOWN) {
+                    t += " y-";
+                }
+                else if (ss == ZUP) {
+                    t += " z+";
+                }
+                else if (ss == ZDOWN) {
+                    t += " z-";
+                }
+                if (getFace(secondSceptre()) == WHITE) {
+                    t += " (white) ";
+                } else {
+                    t += " (black) ";
+                }
+            }
+         }
+        return t;
     }
     
     public static void main (String args[]) {
@@ -221,5 +344,11 @@ public class Cube {
         stuff.addSceptre(ZUP, BLACK);
         stuff.setBoard(b);
         b.put(stuff.getName(), stuff);
+        System.out.println(stuff);
+        System.out.println(stuff.toSceptreString());
+        System.out.println("rotating");
+        stuff.rotate(X);
+        System.out.println(stuff);
+        System.out.println(stuff.toSceptreString());
      }
 }

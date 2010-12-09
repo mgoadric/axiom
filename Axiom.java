@@ -18,17 +18,26 @@ public class Axiom implements BoardGame{
     public Axiom() {
         // Initial Game-state
         board = new HashMap<String, Cube>();
-        Cube b1 = new Cube(-1, 0, 2, Cube.XUP, Cube.NONE, Cube.BLACK);
+        Cube b1 = new Cube(-1,0,2, Cube.XUP, Cube.NONE, Cube.BLACK);
         b1.addSceptre(Cube.ZUP, Cube.BLACK);
         b1.setBoard(board); // link board to cube
         board.put(b1.getName(), b1); // link cube to board
-        Cube b2 = new Cube(0, 0, 2, Cube.ZDOWN, Cube.NONE, Cube.BLACK);
+        Cube b2 = new Cube(0,0,2, Cube.ZDOWN, Cube.NONE, Cube.BLACK);
         b2.setBoard(board);
         board.put(b2.getName(), b2);
-        Cube b3 = new Cube(1, 0, 2, Cube.XUP, Cube.NONE, Cube.BLACK);
+        Cube b3 = new Cube(1,0,2, Cube.XUP, Cube.NONE, Cube.BLACK);
         b3.addSceptre(Cube.ZUP, Cube.BLACK);
         b3.setBoard(board);
         board.put(b3.getName(), b3);
+        Cube b4 = new Cube(-1,0,1, Cube.ZUP, Cube.XDOWN, Cube.BLACK);
+        b4.setBoard(board);
+        board.put(b4.getName(), b4);
+        Cube b5 = new Cube(0,0,1, Cube.YDOWN, Cube.XDOWN, Cube.BLACK);
+        b5.setBoard(board);
+        board.put(b5.getName(), b5);
+        Cube b6 = new Cube(1,0,1, Cube.ZUP, Cube.XUP, Cube.BLACK);
+        b6.setBoard(board);
+        board.put(b6.getName(), b6);
     }
     
     public Axiom(HashMap<String, Cube> board) {
@@ -87,6 +96,7 @@ public class Axiom implements BoardGame{
 	// for the Player p. num of Player is color.
 	public void generateMoves(Player p) {
 		moves = new ArrayList<String>();
+		// piece together string
 		// evaluate each cube
 		
 			// can it be moved?
@@ -100,6 +110,7 @@ public class Axiom implements BoardGame{
 
 	// JMARTIN2 TO DO
     public boolean makeMove(Player p, int m) {
+    	// take string apart and make it happen
 		// look up move in moves ArrayList
 		
 		// if Cube move
@@ -161,7 +172,10 @@ public class Axiom implements BoardGame{
             c.setBoard(b);
             b.put(s, c);
         }
-        return new Axiom(b);
+        Axiom cl = new Axiom(b);
+        cl.firstPlayer(players[0]);
+        cl.secondPlayer(players[1]);
+        return cl;
     }
 
     public String toString() {
@@ -170,10 +184,7 @@ public class Axiom implements BoardGame{
             Cube c = board.get(k);
             s += c + "\n";
             if (c.isOccupied()) {
-                s += c.toSceptreString(c.firstSceptre()) + "\n";
-                if (c.secondSceptre() != Cube.NONE) {
-                    s += c.toSceptreString(c.secondSceptre()) + "\n";
-                }
+                s += c.toSceptreString() + "\n";
             }
         }
         return s;
