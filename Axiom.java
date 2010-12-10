@@ -336,10 +336,9 @@ public class Axiom implements BoardGame{
         String z = choice.substring(f + 1, g);
         int h = choice.indexOf('(', d);
         int i = choice.indexOf(')', h);
-        String clr = choice.substring(h + 1, i);
         String dm1 = choice.substring(g + 1, d);
         String dm2 = choice.substring(d + 1, h - 1);
-        String actualcube = choice.substring(2, choice.find(')'));
+        String actualcube = choice.substring(2, choice.indexOf(')'));
         String s = choice.substring(a + 1, a + 3);
         
             
@@ -351,8 +350,8 @@ public class Axiom implements BoardGame{
 
             // add new cube to board
 
-            int DM1;
-            int DM2;
+            int DM1 = -1;
+            int DM2 = -1;
             if (dm1.equals("x+")) {
                 DM1 = Cube.XUP;
             }
@@ -366,33 +365,33 @@ public class Axiom implements BoardGame{
                 DM1 = Cube.YDOWN;
             }
             else if (dm1.equals("z+")) {
-                int DM1 = Cube.ZUP;
+                DM1 = Cube.ZUP;
             }
             else if (dm1.equals("z-")) {
-                int DM1 = Cube.ZDOWN;
+                DM1 = Cube.ZDOWN;
             }
         ////////////////////////////////////
             if (dm2.equals("x+")) {
-                int DM2 = Cube.XUP;
+                DM2 = Cube.XUP;
             }
             else if (dm2.equals("x-")) {
-                int DM2 = Cube.XDOWN;
+                DM2 = Cube.XDOWN;
             }
             else if (dm2.equals("y+")) {
-                int DM2 = Cube.YUP;
+                DM2 = Cube.YUP;
             }
             else if (dm2.equals("y-")) {
-                int DM2 = Cube.YDOWN;
+                DM2 = Cube.YDOWN;
             }
             else if (dm2.equals("z+")) {
-                int DM2 = Cube.ZUP;
+                DM2 = Cube.ZUP;
             }
             else if (dm2.equals("z-")) {
-                int DM2 = Cube.ZDOWN;
+                DM2 = Cube.ZDOWN;
             }
-            Cube temp = new Cube(choice.Integer.parseInt(x),
-                                 choice.Integer.parseInt(y), 
-                                 choice.Integer.parseInt(z), DM1, DM2, clr);
+            Cube temp = new Cube(Integer.parseInt(x),
+                                 Integer.parseInt(y), 
+                                 Integer.parseInt(z), DM1, DM2, clr);
             temp.setBoard(board);
             board.put(temp.getName(), temp);
         }
@@ -422,7 +421,8 @@ public class Axiom implements BoardGame{
             else if (dm2.equals("z-")) {
                 int DM2 = Cube.ZDOWN;
             }
-            actualcube.removeSceptre(acutalcube.firstSceptre());
+            Cube was = board.get(actualcube);
+            was.removeSceptre(was.firstSceptre());
     
             
             // add to new location
