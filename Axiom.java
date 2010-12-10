@@ -150,7 +150,7 @@ public class Axiom implements BoardGame{
 						for (int i : c2.freeFaces()) {
 				
 							// for each possible rotation to be in this space
-							System.out.println(c + " " + c2 + " on face " + i);							
+							//System.out.println(c + " " + c2 + " on face " + i);							
 							count++;
 						}
 						
@@ -192,7 +192,7 @@ public class Axiom implements BoardGame{
 														(cur.getY() + ymod[i]) + "," +
 														(cur.getZ() + zmod);
 								if (board.get(neighbor2) == null) {
-									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")z" + zc);
+									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")z" + zc + " ");
 									cur = who;
 									count++;
 								} else {
@@ -230,7 +230,7 @@ public class Axiom implements BoardGame{
 														(cur.getY() + ymod[i]) + "," +
 														(cur.getZ() + zmod[i]);
 								if (board.get(neighbor2) == null) {
-									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")x" + xc);
+									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")x" + xc + " " );
 									cur = who;
 									count++;
 								} else {
@@ -269,7 +269,7 @@ public class Axiom implements BoardGame{
 														(cur.getY() + ymod) + "," +
 														(cur.getZ() + zmod[i]);
 								if (board.get(neighbor2) == null) {
-									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")y" + yc);
+									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")y" + yc + " ");
 									cur = who;
 									count++;
 									nei = true;
@@ -282,7 +282,7 @@ public class Axiom implements BoardGame{
 				// orthogonal wrapping up, same or down
 				Cube cur = c;
 				int dir = face;
-				boolean nei = true;
+				boolean nei = false;  // TRUE
 				while (nei) {						
 					nei = false;
 					Cube a = null;
@@ -324,23 +324,27 @@ public class Axiom implements BoardGame{
         // take string apart and make it happen
         // look up move in moves ArrayList
         
-        String choice = moves.get(m);            
+        String choice = moves.get(m);        
+        //System.out.println(choice);
         int a = choice.indexOf(')');
         int b = choice.indexOf('(', a);            
         int e = choice.indexOf(',', b);
-        int f = choice.indexOf(',', e);
+        int f = choice.indexOf(',', e + 1);
         int g = choice.indexOf(')', f);
         int d = choice.indexOf(' ', f);
+/*		System.out.println("a = " + a);
+		System.out.println("b = " + b);
+		System.out.println("e = " + e);
+		System.out.println("f = " + f);
+		System.out.println("g = " + g);
+		System.out.println("d = " + d); */
         String x = choice.substring(b + 1, e);
-        String y = choice.substring(e +1, f);
+        String y = choice.substring(e + 1, f);
         String z = choice.substring(f + 1, g);
-        int h = choice.indexOf('(', d);
-        int i = choice.indexOf(')', h);
         String dm1 = choice.substring(g + 1, d);
-        String dm2 = choice.substring(d + 1, h - 1);
+        String dm2 = choice.substring(d + 1, choice.length());
         String actualcube = choice.substring(2, choice.indexOf(')'));
-        String s = choice.substring(a + 1, a + 3);
-        
+        String s = choice.substring(a + 1, a + 3);    
             
         // if Cube move
         if (choice.charAt(0) == 'C') {
@@ -400,40 +404,55 @@ public class Axiom implements BoardGame{
         if (choice.charAt(0) == 'S') {
             
             int clr = board.get(choice.substring(2, choice.indexOf(')'))).getColor();
-            board.remove(choice.substring(2, choice.indexOf(')')));
-        
+        	int DM1 = -1;
             // remove from current location
-            if (dm2.equals("x+")) {
-                int DM2 = Cube.XUP;
+            if (dm1.equals("x+")) {
+                DM1 = Cube.XUP;
             }
-            else if (dm2.equals("x-")) {
-                int DM2 = Cube.XDOWN;
+            else if (dm1.equals("x-")) {
+                DM1 = Cube.XDOWN;
             }
-            else if (dm2.equals("y+")) {
-                int DM2 = Cube.YUP;
+            else if (dm1.equals("y+")) {
+                DM1 = Cube.YUP;
             }
-            else if (dm2.equals("y-")) {
-                int DM2 = Cube.YDOWN;
+            else if (dm1.equals("y-")) {
+                DM1 = Cube.YDOWN;
             }
-            else if (dm2.equals("z+")) {
-                int DM2 = Cube.ZUP;
+            else if (dm1.equals("z+")) {
+                DM1 = Cube.ZUP;
             }
-            else if (dm2.equals("z-")) {
-                int DM2 = Cube.ZDOWN;
+            else if (dm1.equals("z-")) {
+                DM1 = Cube.ZDOWN;
             }
+            
+            System.out.println(actualcube);
             Cube was = board.get(actualcube);
+            System.out.println(was);
+	        int sclr = was.getFace(was.firstSceptre());
             was.removeSceptre(was.firstSceptre());
     
             
             // add to new location
+            String whereto = "" + x + "," + y + "," + z;
+            
+           	Cube c2 = board.get(whereto);
+           	System.out.println(c2);
+           	c2.addSceptre(DM1, sclr);
             
             // if sceptre currently encroaching and leaving that cube, 
             // make cube disappear
+            System.out.println("scolor = " + sclr + ", clr = " + clr);
+            if (sclr != clr && was.isFree()) {
+            	board.remove(was);
+            }
             
         }
         // else, print "Must move a sceptre(S) or a cube(C)"
         // ask them to make a move again
         swapPlayers();
+
+		// remove all moves
+		moves = null;
 
         // never gets another move in this game, so always return false
         return false;
