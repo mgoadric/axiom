@@ -282,7 +282,7 @@ public class Axiom implements BoardGame{
 				// orthogonal wrapping up, same or down
 				Cube cur = c;
 				int dir = face;
-				boolean nei = true;  // TRUE
+				boolean nei = false;  // TRUE
 				while (nei) {						
 					nei = false;
 					System.out.println(cur);
