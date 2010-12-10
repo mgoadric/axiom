@@ -282,9 +282,10 @@ public class Axiom implements BoardGame{
 				// orthogonal wrapping up, same or down
 				Cube cur = c;
 				int dir = face;
-				boolean nei = false;  // TRUE
+				boolean nei = true;  // TRUE
 				while (nei) {						
 					nei = false;
+					System.out.println(cur);
 					Cube a = null;
 					Cube b = null;
 					if (dir == Cube.ZUP) {
@@ -295,21 +296,24 @@ public class Axiom implements BoardGame{
 						// check three placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.XUP)) {
-								moves.add("S(" + cur.getName() + ") S(" + cur.getName() + ")x+");
+								moves.add("S(" + cur.getName() + ") S(" + cur.getName() + ")x+ ");
 								nei = true;
+								dir = Cube.XUP;
 							    count++;
 							}
 						} else if (b == null) {
 							if (a.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + cur.getName() + ") S(" + a.getName() + ")z+");
+								moves.add("S(" + cur.getName() + ") S(" + a.getName() + ")z+ ");
 								nei = true;
+								dir = Cube.ZUP;
 								cur = a;
 							    count++;
 							}						
 						} else {
 							if (b.isEmpty(Cube.XDOWN)) {
-								moves.add("S(" + cur.getName() + ") S(" + b.getName() + ")x-");
+								moves.add("S(" + cur.getName() + ") S(" + b.getName() + ")x- ");
 								nei = true;
+								dir = Cube.XDOWN;
 								cur = b;
 							    count++;
 							}						
@@ -425,9 +429,9 @@ public class Axiom implements BoardGame{
                 DM1 = Cube.ZDOWN;
             }
             
-            System.out.println(actualcube);
+            //System.out.println(actualcube);
             Cube was = board.get(actualcube);
-            System.out.println(was);
+            //System.out.println(was);
 	        int sclr = was.getFace(was.firstSceptre());
             was.removeSceptre(was.firstSceptre());
     
@@ -436,14 +440,16 @@ public class Axiom implements BoardGame{
             String whereto = "" + x + "," + y + "," + z;
             
            	Cube c2 = board.get(whereto);
-           	System.out.println(c2);
+           	//System.out.println(c2);
            	c2.addSceptre(DM1, sclr);
             
             // if sceptre currently encroaching and leaving that cube, 
             // make cube disappear
-            System.out.println("scolor = " + sclr + ", clr = " + clr);
+            //System.out.println("scolor = " + sclr + ", clr = " + clr);
+            //System.out.println("is free? " + was.isFree());
             if (sclr != clr && was.isFree()) {
-            	board.remove(was);
+            	board.remove(actualcube);
+            	//System.out.println("removed????");
             }
             
         }
