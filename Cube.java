@@ -62,6 +62,10 @@ public class Cube {
         return "" + getX() + "," + getY() + "," + getZ();
     }
     
+    public int getColor() {
+    	return color;
+    }
+    
     public int getX() {
         return location[X];
     }
@@ -167,13 +171,68 @@ public class Cube {
         if (isOccupied()) {
             return false;
         }
-        String above = "" + location[X] + ", " + 
-                            location[Y] + ", " + 
+        String above = "" + location[X] + "," + 
+                            location[Y] + "," + 
                             (location[Z] + 1);
         if (board.get(above) == null) {
             return true;
         }
         return false;
+    }
+    
+    public Cube getNeighbor(int f) {
+    	if (f == ZUP) {
+    		return board.get("" + getX() + "," + getY() + "," + (getZ() + 1));
+    	} else if (f == ZDOWN) {
+    		return board.get("" + getX() + "," + getY() + "," + (getZ() - 1));    	
+    	} else if (f == YUP) {
+    		return board.get("" + getX() + "," + (getY() + 1) + "," + getZ());    	
+    	} else if (f == YDOWN) {
+    		return board.get("" + getX() + "," + (getY() - 1) + "," + getZ());    	
+    	} else if (f == XUP) {
+    		return board.get("" + (getX() + 1) + "," + getY() + "," + getZ());    	
+    	} else if (f == XDOWN) {
+    		return board.get("" + (getX() - 1)+ "," + getY() + "," + getZ());    	
+    	}
+    	return null;
+    }
+
+    public ArrayList<Integer> freeFaces() {
+    	ArrayList<Integer> free = new ArrayList<Integer>();
+    	for (int i = 0; i < faces.length; i++) {
+    		if (faces[i] == EMPTY) {
+				String neighbor = null;
+    			if (i == XUP) {
+    			 	neighbor = "" + (location[X] + 1) + "," + 
+    								location[Y] + "," +
+    						 	    location[Z];
+    			} else if (i == YUP) {
+    			 	neighbor = "" + location[X] + "," + 
+    								(location[Y] + 1) + "," +
+    						 	    location[Z];    			
+    			} else if (i == ZUP) {
+    			 	neighbor = "" + location[X] + "," + 
+    								location[Y] + "," +
+    						 	    (location[Z] + 1);    			
+    			} else if (i == XDOWN) {
+    			 	neighbor = "" + (location[X] - 1) + "," + 
+    								location[Y] + "," +
+    						 	    location[Z];
+    			} else if (i == YDOWN) {
+    			 	neighbor = "" + location[X] + "," + 
+    								(location[Y] - 1) + "," +
+    						 	    location[Z];    			
+    			} else if (i == ZDOWN && location[Z] != 1) {
+    			 	neighbor = "" + location[X] + "," + 
+    								location[Y] + "," +
+    						 	    (location[Z] - 1);    			
+    			}
+    			if (neighbor != null && board.get(neighbor) == null) {
+    				free.add(i);
+    			}
+    		}
+    	}
+    	return free;
     }
 
     public boolean twoSceptreSameColor() {
@@ -198,7 +257,6 @@ public class Cube {
         return faces[f] == EMPTY;
     }
     
-    // JMARTIN2 TODO
     // Rotate the cube in the direction d, being one of X, Y or Z
     public void rotate(int d) {
         if (d == Y) {
@@ -223,7 +281,7 @@ public class Cube {
             faces[YUP] = temp;
             }
     }
-    // JMARTIN2 TODO
+
     // Use the notation from the play by email paper
     public String toString() {
         String c = "C (" + getX() + "," + getY() + "," + getZ() + ")";
@@ -276,7 +334,6 @@ public class Cube {
         return c;
     }
     
-    // JMARTIN2 TODO
     // Use the notation from the play by email paper
     public String toSceptreString() {
         String t = "";
