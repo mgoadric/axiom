@@ -277,7 +277,7 @@ public class Cube {
     					         location[Y] + "," +
     					 	     location[Z];  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XUP) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XUP) == DOME)){
     			        System.out.println("did it work?");
     			        return true; 
     			    }
@@ -288,7 +288,7 @@ public class Cube {
     					       (location[Y] + 1) + "," +
     					 	    location[Z];  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(YDOWN) == DOME)){
     			        System.out.println("did it work?");
     			        return true; 
     			    }
@@ -299,7 +299,7 @@ public class Cube {
     					       (location[Y] - 1) + "," +
     					 	    location[Z];  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YUP) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(YUP) == DOME)){
     			        System.out.println("did it work?");
     			        return true; 
     			    }
@@ -310,7 +310,7 @@ public class Cube {
     					        location[Y] + "," +
     					 	   (location[Z] + 1);  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(ZDOWN) == DOME)){
     			        System.out.println("did it work?");
     			        return true; 
     			    }
@@ -321,7 +321,7 @@ public class Cube {
     					        location[Y] + "," +
     					 	   (location[Z] - 1);  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZUP) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(ZUP) == DOME)){
     			        System.out.println("did it work?");
     			        return true; 
     			    }
