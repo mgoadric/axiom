@@ -164,7 +164,7 @@ public class Axiom implements BoardGame{
 				}
 			}
 			
-			// SCEPTRE MOVES
+			// SCEPTRE MOVES PLEASE AVERT YOUR EYES FROM MY UGLY UGLY CODE..
 			if (c.isOccupied() && c.getFace(c.firstSceptre()) == p.getNum()) {
 			
 				// find all places where this sceptre can be placed
@@ -1168,8 +1168,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.HUMAN, 6);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.HUMAN, 6);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 10);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 10);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);
