@@ -197,6 +197,10 @@ public class Cube {
     	return null;
     }
 
+	public Cube getNeighbor(int dx, int dy, int dz) {
+		return board.get("" + (getX() + dx) + "," + (getY() + dy) + "," + (getZ() + dz));
+	}
+
     public ArrayList<Integer> freeFaces() {
     	ArrayList<Integer> free = new ArrayList<Integer>();
     	for (int i = 0; i < faces.length; i++) {

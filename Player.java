@@ -304,8 +304,8 @@ public class Player {
     public int chooseMove(BoardGame board) {
         // Returns the next move that this player wants to make
         int move = -1;
+        System.out.println(board.showMoves(this));
         if (type == HUMAN) {
-        	System.out.println(board.showMoves(this));
             System.out.println("Please enter your move:");
             move = sc.nextInt();
             while (!board.legalMove(this, move)) {
@@ -316,10 +316,10 @@ public class Player {
         } else if (type == RANDOM) {
             ArrayList<Integer> t = board.legalMoves(this);
             move = t.get((int)(Math.random() * t.size()));
-            System.out.println("chose move" + move);
+            System.out.println("chose move " + move);
         } else if (type == MINIMAX) {
             move = minimaxMove( board, ply );
-            System.out.println("chose move" + move);
+            System.out.println("chose move " + move);
 //        } else if (this.type == this.ABPRUNE) {
 //            move = this.alphaBetaMove( board, this.ply);
 //            System.out.println("chose move" + move);
