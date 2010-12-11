@@ -56,8 +56,9 @@ public class Player {
             nb.makeMove(this, m);
             Player opp = new Player(this.opp, this.num, this.type, this.ply);
             int s[] = opp.minValue(nb, ply-1, turn);
+            System.out.println("Move " + m + " score " + s[0] + " reply " + s[1]);
             if (s[0] > score) {
-                move = s[1];
+                move = m;
                 score = s[0];
             }
         }
@@ -90,7 +91,7 @@ public class Player {
             int[] s2 = opponent.minValue(nextBoard, ply-1, turn);
             if (s2[0] > s[0]) {
                 s[0] = s2[0];
-                s[1] = s2[1];            
+                s[1] = m;            
             }
         }
         return s;
@@ -118,7 +119,7 @@ public class Player {
             int[] s2 = opponent.maxValue(nextBoard, ply-1, turn);
             if (s2[0] < s[0]) {
                 s[0] = s2[0];
-                s[1] = s2[1];            
+                s[1] = m;            
             }
         }
         return s;

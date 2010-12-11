@@ -80,8 +80,8 @@ public class Cube {
 
     public Cube clone() {
         Cube c = new Cube(location[X], location[Y], location[Z], firstDome(), secondDome(), color);
-        if (addSceptre(firstSceptre(), getFace(firstSceptre()))) {
-            addSceptre(secondSceptre(), getFace(secondSceptre()));
+        if (c.addSceptre(firstSceptre(), getFace(firstSceptre()))) {
+            c.addSceptre(secondSceptre(), getFace(secondSceptre()));
         }
         return c;
     }

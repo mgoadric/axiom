@@ -81,6 +81,10 @@ public class Axiom implements BoardGame{
     	this.turn = turn;
     }
     
+    public void setMoves(ArrayList<String> moves) {
+    	this.moves = moves;
+    }
+    
     // interface methods 
     // Detect if the color has won in the current board
     public boolean hasWon(int color) {
@@ -138,7 +142,7 @@ public class Axiom implements BoardGame{
 
 			Cube c = board.get(k);
 			
-			// can it be moved?
+			// CUBE MOVES
 			if (c.isFree() && c.getColor() == p.getNum()) {
 			
 				// find all locations where this cube can be placed
@@ -160,13 +164,13 @@ public class Axiom implements BoardGame{
 				}
 			}
 			
-			// does it have a sceptre?
+			// SCEPTRE MOVES
 			if (c.isOccupied() && c.getFace(c.firstSceptre()) == p.getNum()) {
 			
 				// find all places where this sceptre can be placed
 				int face = c.firstSceptre();
 				
-				// diagonal in same plane
+				// DIAGONAL in same plane
 				if (face == Cube.ZUP || face == Cube.ZDOWN) {
 					
 					int zmod = 1;
@@ -279,16 +283,16 @@ public class Axiom implements BoardGame{
 					}
 				}
 				
-				// orthogonal wrapping up, same or down
+				// ORTHOGONAL wrapping 
 				Cube cur = c;
 				int dir = face;
-				boolean nei = false;  // TRUE
+				boolean nei = true;  // Z, XUP
 				while (nei) {						
 					nei = false;
-					System.out.println(cur);
-					Cube a = null;
-					Cube b = null;
+					//System.out.println(cur);
 					if (dir == Cube.ZUP) {
+						Cube a = null;
+						Cube b = null;
 						a = cur.getNeighbor(Cube.XUP);
 						if (a != null) {
 							b = a.getNeighbor(Cube.ZUP);
@@ -296,14 +300,14 @@ public class Axiom implements BoardGame{
 						// check three placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.XUP)) {
-								moves.add("S(" + cur.getName() + ") S(" + cur.getName() + ")x+ ");
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")x+ ");
 								nei = true;
 								dir = Cube.XUP;
 							    count++;
 							}
 						} else if (b == null) {
 							if (a.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + cur.getName() + ") S(" + a.getName() + ")z+ ");
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = a;
@@ -311,7 +315,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.XDOWN)) {
-								moves.add("S(" + cur.getName() + ") S(" + b.getName() + ")x- ");
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")x- ");
 								nei = true;
 								dir = Cube.XDOWN;
 								cur = b;
@@ -319,7 +323,488 @@ public class Axiom implements BoardGame{
 							}						
 						}
 					}
+					if (dir == Cube.XUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.ZDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.XUP);
+						}
+						// check three placements
+						if (a == null) {
+						} else if (b == null) {
+							if (a.isEmpty(Cube.XUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x+ ");
+								nei = true;
+								dir = Cube.XUP;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.XDOWN) {
+						Cube a = cur.getNeighbor(Cube.ZUP);
+						// check two placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+							    count++;
+							}
+						} else {
+							if (a.isEmpty(Cube.XDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x- ");
+								nei = true;
+								dir = Cube.XDOWN;
+								cur = a;
+							    count++;
+							}						
+						}
+					}
 				}
+				cur = c;
+				dir = face;
+				nei = true;  // Z, XDOWN
+				while (nei) {						
+					nei = false;
+					//System.out.println(cur);
+					if (dir == Cube.ZUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.XDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.ZUP);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.XDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")x- ");
+								nei = true;
+								dir = Cube.XDOWN;
+							    count++;
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.XUP)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")x+ ");
+								nei = true;
+								dir = Cube.XUP;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.XDOWN) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.ZDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.XDOWN);
+						}
+						// check three placements
+						if (a == null) {
+						} else if (b == null) {
+							if (a.isEmpty(Cube.XDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x- ");
+								nei = true;
+								dir = Cube.XDOWN;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.XUP) {
+						Cube a = cur.getNeighbor(Cube.ZUP);
+						// check two placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+							    count++;
+							}
+						} else {
+							if (a.isEmpty(Cube.XUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x+ ");
+								nei = true;
+								dir = Cube.XUP;
+								cur = a;
+							    count++;
+							}						
+						}
+					}
+				}
+				cur = c;
+				dir = face;
+				nei = true;  // Z, YUP
+				while (nei) {						
+					nei = false;
+					//System.out.println(cur);
+					if (dir == Cube.ZUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.YUP);
+						if (a != null) {
+							b = a.getNeighbor(Cube.ZUP);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.YUP)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")y+ ");
+								nei = true;
+								dir = Cube.YUP;
+							    count++;
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.YDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")y- ");
+								nei = true;
+								dir = Cube.YDOWN;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.YUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.ZDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.YUP);
+						}
+						// check three placements
+						if (a == null) {
+						} else if (b == null) {
+							if (a.isEmpty(Cube.YUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y+ ");
+								nei = true;
+								dir = Cube.YUP;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.YDOWN) {
+						Cube a = cur.getNeighbor(Cube.ZUP);
+						// check two placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+							    count++;
+							}
+						} else {
+							if (a.isEmpty(Cube.YDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y- ");
+								nei = true;
+								dir = Cube.YDOWN;
+								cur = a;
+							    count++;
+							}						
+						}
+					}
+				}
+				cur = c;
+				dir = face;
+				nei = true;  // Z, YDOWN
+				while (nei) {						
+					nei = false;
+					//System.out.println(cur);
+					if (dir == Cube.ZUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.YDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.ZUP);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.YDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")y- ");
+								nei = true;
+								dir = Cube.YDOWN;
+							    count++;
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.YUP)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")y+ ");
+								nei = true;
+								dir = Cube.YUP;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.YDOWN) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.ZDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.YDOWN);
+						}
+						// check three placements
+						if (a == null) {
+						} else if (b == null) {
+							if (a.isEmpty(Cube.YDOWN)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y- ");
+								nei = true;
+								dir = Cube.YDOWN;
+								cur = a;
+							    count++;
+							}						
+						} else {
+							if (b.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+								cur = b;
+							    count++;
+							}						
+						}
+					}
+					if (dir == Cube.YUP) {
+						Cube a = cur.getNeighbor(Cube.ZUP);
+						// check two placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.ZUP)) {
+								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								nei = true;
+								dir = Cube.ZUP;
+							    count++;
+							}
+						} else {
+							if (a.isEmpty(Cube.YUP)) {
+								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y+ ");
+								nei = true;
+								dir = Cube.YUP;
+								cur = a;
+							    count++;
+							}						
+						}
+					}
+				}
+				/*
+				cur = c;
+				dir = face;
+				nei = true;  // CLOCKWISE, xup, yup, xdown, ydown
+				while (nei) {						
+					nei = false;
+					//System.out.println(cur);
+					if (dir == Cube.XUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.YUP);
+						if (a != null) {
+							b = a.getNeighbor(Cube.XUP);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.YUP)) {
+								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")y+ ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.YUP;
+								    count++;
+								}
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.XUP)) {
+								String m = "S(" + c.getName() + ") S(" + a.getName() + ")x+ ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.XUP;
+									cur = a;
+								    count++;
+								}
+							}
+						} else {
+							if (b.isEmpty(Cube.YDOWN)) {
+								String m = "S(" + c.getName() + ") S(" + b.getName() + ")y- ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.YDOWN;
+									cur = b;
+								    count++;
+								}
+							}
+						}
+					} else if (dir == Cube.YUP) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.XDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.YUP);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.XDOWN)) {
+								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")x- ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.XDOWN;
+								    count++;
+								}
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.YUP)) {
+								String m = "S(" + c.getName() + ") S(" + a.getName() + ")y+ ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.YUP;
+									cur = a;
+								    count++;
+								}
+							}
+						} else {
+							if (b.isEmpty(Cube.XUP)) {
+								String m = "S(" + c.getName() + ") S(" + b.getName() + ")x+ ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.XUP;
+									cur = b;
+								    count++;
+								}
+							}
+						}
+					} else if (dir == Cube.XDOWN) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.YDOWN);
+						if (a != null) {
+							b = a.getNeighbor(Cube.XDOWN);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.YDOWN)) {
+								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")y- ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.YDOWN;
+								    count++;
+								}
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.XDOWN)) {
+								String m = "S(" + c.getName() + ") S(" + a.getName() + ")x- ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.XDOWN;
+									cur = a;
+								    count++;
+								}
+							}
+						} else {
+							if (b.isEmpty(Cube.YUP)) {
+								String m = "S(" + c.getName() + ") S(" + b.getName() + ")y+ ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.YUP;
+									cur = b;
+								    count++;
+								}
+							}
+						}
+					} else if (dir == Cube.YDOWN) {
+						Cube a = null;
+						Cube b = null;
+						a = cur.getNeighbor(Cube.XUP);
+						if (a != null) {
+							b = a.getNeighbor(Cube.YDOWN);
+						}
+						// check three placements
+						if (a == null) {
+							if (cur.isEmpty(Cube.XUP)) {
+								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")x+ ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.XUP;
+								    count++;
+								}
+							}
+						} else if (b == null) {
+							if (a.isEmpty(Cube.YDOWN)) {
+								String m = "S(" + c.getName() + ") S(" + a.getName() + ")y- ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.YDOWN;
+									cur = a;
+								    count++;
+								}
+							}
+						} else {
+							if (b.isEmpty(Cube.XDOWN)) {
+								String m = "S(" + c.getName() + ") S(" + b.getName() + ")x- ";
+								if (!moves.contains(m)) {
+									moves.add(m);
+									nei = true;
+									dir = Cube.XDOWN;
+									cur = b;
+								    count++;
+								}
+							}
+						}
+					}
+				}*/
 			}
 		}
 	}
@@ -507,11 +992,12 @@ public class Axiom implements BoardGame{
         cl.firstPlayer(players[0]);
         cl.secondPlayer(players[1]);
         cl.setTurn(turn);
+        cl.setMoves(moves);
         return cl;
     }
 
     public String toString() {
-        String s = "Current Axiom Cubes\n";
+        String s = "Current Axiom Board\n";
         for (String k : board.keySet()) {
             Cube c = board.get(k);
             s += c + "\n";
@@ -524,8 +1010,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.HUMAN, 2);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.HUMAN, 0);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.HUMAN, 6);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.MINIMAX, 4);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);
