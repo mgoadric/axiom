@@ -200,32 +200,50 @@ public class Cube {
     public ArrayList<Integer> freeFaces() {
     	ArrayList<Integer> free = new ArrayList<Integer>();
     	for (int i = 0; i < faces.length; i++) {
-    		if (faces[i] == EMPTY) {
+    		if (faces[i] == EMPTY || faces[i] == DOME) {
 				String neighbor = null;
+				String support = null;
     			if (i == XUP) {
-    			 	neighbor = "" + (location[X] + 1) + "," + 
-    								location[Y] + "," +
-    						 	    location[Z];
+    			   support = "" + (location[X] + 1) + "," + 
+    					    	   location[Y] + "," +
+    						      (location[Z] -1);
+    			    if (location[Z] == 1 || board.get(support) != null) {
+    			        neighbor = "" + (location[X] + 1) + "," + 
+    					    			 location[Y] + "," +
+    						     	     location[Z];
+    				}
     			} else if (i == YUP) {
-    			 	neighbor = "" + location[X] + "," + 
-    								(location[Y] + 1) + "," +
-    						 	    location[Z];    			
+    			    support = "" + location[X] + "," + 
+    					    		(location[Y] + 1) + "," +
+    						       (location[Z] -1);
+    			    if (location[Z] == 1 || board.get(support) != null) {
+    			 	    neighbor = "" + location[X] + "," + 
+    						    	   (location[Y] + 1) + "," +
+    						 	        location[Z];  
+    				}
     			} else if (i == ZUP) {
-    			 	neighbor = "" + location[X] + "," + 
-    								location[Y] + "," +
-    						 	    (location[Z] + 1);    			
+    			 	    neighbor = "" + location[X] + "," + 
+    					    			location[Y] + "," +
+    						     	   (location[Z] + 1);    		
+    						  
     			} else if (i == XDOWN) {
-    			 	neighbor = "" + (location[X] - 1) + "," + 
-    								location[Y] + "," +
-    						 	    location[Z];
+    			    support = "" + (location[X] + 1) + "," + 
+    					    		location[Y] + "," +
+    						       (location[Z] - 1);
+    			    if (location[Z] == 1 || board.get(support) != null) {
+    			 	    neighbor = "" + (location[X] - 1) + "," + 
+    					    			 location[Y] + "," +
+    						     	     location[Z];
+    		        }
     			} else if (i == YDOWN) {
-    			 	neighbor = "" + location[X] + "," + 
-    								(location[Y] - 1) + "," +
-    						 	    location[Z];    			
-    			} else if (i == ZDOWN && location[Z] != 1) {
-    			 	neighbor = "" + location[X] + "," + 
-    								location[Y] + "," +
-    						 	    (location[Z] - 1);    			
+    			    support = "" + location[X] + "," + 
+    					          (location[Y] - 1) + "," +
+    						      (location[Z] -1);
+    			    if (location[Z] == 1 || board.get(support) != null) {
+    			 	    neighbor = "" + location[X] + "," + 
+    					    		   (location[Y] - 1) + "," +
+    						     	    location[Z];    			    			
+    			    }
     			}
     			if (neighbor != null && board.get(neighbor) == null) {
     				free.add(i);
@@ -233,6 +251,80 @@ public class Cube {
     		}
     	}
     	return free;
+    }
+
+    public boolean lockedDome() {
+        // do you have a locked dome? *Denotes legal positioning*
+        for (int i = 0; i < faces.length; i++) {
+            String neighbor = null;
+            if (faces[i] == XUP) {
+                neighbor = "" + (location[X] + 1) + "," + 
+    					         location[Y] + "," +
+    					 	     location[Z];  
+    			if (board.containsKey(neighbor)) {
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        System.out.println("did it work?");
+    			        return true; 
+    			    }
+    			}
+    	    }    
+            if (faces[i] == XDOWN) {
+                neighbor = "" + (location[X] - 1) + "," + 
+    					         location[Y] + "," +
+    					 	     location[Z];  
+                if (board.containsKey(neighbor)) {
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        System.out.println("did it work?");
+    			        return true; 
+    			    }
+    			}
+            }
+            if (faces[i] == YUP) {
+                neighbor = "" + location[X] + "," + 
+    					       (location[Y] + 1) + "," +
+    					 	    location[Z];  
+                if (board.containsKey(neighbor)) {
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        System.out.println("did it work?");
+    			        return true; 
+    			    }
+    			}
+            }
+            if (faces[i] == YDOWN) {
+                neighbor = "" + location[X] + "," + 
+    					       (location[Y] - 1) + "," +
+    					 	    location[Z];  
+                if (board.containsKey(neighbor)) {
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        System.out.println("did it work?");
+    			        return true; 
+    			    }
+    			}
+            }
+            if (faces[i] == ZUP) {
+                neighbor = "" + location[X] + "," + 
+    					        location[Y] + "," +
+    					 	   (location[Z] + 1);  
+                if (board.containsKey(neighbor)) {
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        System.out.println("did it work?");
+    			        return true; 
+    			    }
+    			}
+            }
+            if (faces[i] == ZDOWN) {
+                neighbor = "" + location[X] + "," + 
+    					        location[Y] + "," +
+    					 	   (location[Z] - 1);  
+                if (board.containsKey(neighbor)) {
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        System.out.println("did it work?");
+    			        return true; 
+    			    }
+    			}
+            }   
+        }
+        return false;
     }
 
     public boolean twoSceptreSameColor() {
