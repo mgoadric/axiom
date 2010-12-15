@@ -85,6 +85,10 @@ public class Axiom implements BoardGame{
     	this.moves = moves;
     }
     
+    public String showMove(int m) {
+    	return moves.get(m);
+    }
+    
     // interface methods 
     // Detect if the color has won in the current board
     public boolean hasWon(int color) {
@@ -972,7 +976,7 @@ public class Axiom implements BoardGame{
         // look up move in moves ArrayList
         
         String choice = moves.get(m);        
-        //System.out.println(choice);
+        //System.out.println("Making move" + choice);
         int a = choice.indexOf(')');
         int b = choice.indexOf('(', a);            
         int e = choice.indexOf(',', b);
@@ -1168,8 +1172,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 10);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 10);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 4);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 4);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);
