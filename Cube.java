@@ -9,20 +9,21 @@ import java.util.*;
 public class Cube {
 
     // Constants
-    public static int X = 0;
-    public static int Y = 1;
-    public static int Z = 2;
-    public static int BLACK = 0;
-    public static int WHITE = 1;
-    public static int EMPTY = 2;
-    public static int DOME = 3;
-    public static int XUP = 0;
-    public static int XDOWN = 1;
-    public static int YUP = 2;
-    public static int YDOWN = 3;
-    public static int ZUP = 4;
-    public static int ZDOWN = 5;
-    public static int NONE = -1;
+    public static final int X = 0;
+    public static final int Y = 1;
+    public static final int Z = 2;
+    public static final int BLACK = 0;
+    public static final int WHITE = 1;
+    public static final int EMPTY = 2;
+    public static final int DOME = 3;
+    public static final int XUP = 0;
+    public static final int XDOWN = 1;
+    public static final int YUP = 2;
+    public static final int YDOWN = 3;
+    public static final int ZUP = 4;
+    public static final int ZDOWN = 5;
+    public static final int NONE = -1;
+	public static final String[] fnames = {"x+", "x-", "y+", "y-", "z+", "z-"};
 
     // Data members
     private int[] location;
@@ -47,6 +48,24 @@ public class Cube {
         this.color = color;
     }
     
+    public Cube (String loc, int d1, int d2, int color) {
+    	int first = loc.indexOf(",");
+    	int second = loc.indexOf(",", first + 1);
+        location = new int[3];
+		location[X] = Integer.parseInt(loc.substring(0, first));
+		location[Y] = Integer.parseInt(loc.substring(first + 1, second));
+		location[Z] = Integer.parseInt(loc.substring(second + 1));
+        faces = new int[6];
+        for (int i = 0; i < faces.length; i++) {
+            if (i == d1 || i == d2) {
+                faces[i] = DOME;
+            } else {
+                faces[i] = EMPTY;
+            }
+        }
+        this.color = color;
+	}
+	
     public void setBoard(HashMap<String, Cube> b) {
         this.board = b;
     }
@@ -94,6 +113,8 @@ public class Cube {
         }
         // should NEVER happen
         System.err.println("UHOH!!!");
+        System.err.println(getName());
+        System.exit(-1);
         return NONE;
     }
 
@@ -201,16 +222,16 @@ public class Cube {
 		return board.get("" + (getX() + dx) + "," + (getY() + dy) + "," + (getZ() + dz));
 	}
 
-    public ArrayList<Integer> freeFaces() {
-    	ArrayList<Integer> free = new ArrayList<Integer>();
+    public ArrayList<String> freeFaces() {
+    	ArrayList<String> free = new ArrayList<String>();
     	for (int i = 0; i < faces.length; i++) {
     		if (faces[i] == EMPTY || faces[i] == DOME) {
 				String neighbor = null;
 				String support = null;
     			if (i == XUP) {
-    			   support = "" + (location[X] + 1) + "," + 
-    					    	   location[Y] + "," +
-    						      (location[Z] -1);
+    			    support = "" + (location[X] + 1) + "," + 
+    				 	    	    location[Y] + "," +
+    						       (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
     			        neighbor = "" + (location[X] + 1) + "," + 
     					    			 location[Y] + "," +
@@ -219,7 +240,7 @@ public class Cube {
     			} else if (i == YUP) {
     			    support = "" + location[X] + "," + 
     					    		(location[Y] + 1) + "," +
-    						       (location[Z] -1);
+    						       (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
     			 	    neighbor = "" + location[X] + "," + 
     						    	   (location[Y] + 1) + "," +
@@ -231,7 +252,7 @@ public class Cube {
     						     	   (location[Z] + 1);    		
     						  
     			} else if (i == XDOWN) {
-    			    support = "" + (location[X] + 1) + "," + 
+    			    support = "" + (location[X] - 1) + "," + 
     					    		location[Y] + "," +
     						       (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
@@ -242,7 +263,7 @@ public class Cube {
     			} else if (i == YDOWN) {
     			    support = "" + location[X] + "," + 
     					          (location[Y] - 1) + "," +
-    						      (location[Z] -1);
+    						      (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
     			 	    neighbor = "" + location[X] + "," + 
     					    		   (location[Y] - 1) + "," +
@@ -250,85 +271,108 @@ public class Cube {
     			    }
     			}
     			if (neighbor != null && board.get(neighbor) == null) {
-    				free.add(i);
+    				free.add(neighbor);
     			}
     		}
     	}
     	return free;
     }
 
-    public boolean lockedDome() {
-        // do you have a locked dome? *Denotes legal positioning*
+    public boolean legal() {
+        // do you have a locked dome and no conflicts DOME - DOME? *Denotes legal positioning*
+        
+        if (location[Z] == 1 && (firstDome() == ZDOWN || secondDome() == ZDOWN)) {
+        	return false;
+        }
+        boolean locked = false;
         for (int i = 0; i < faces.length; i++) {
             String neighbor = null;
-            if (faces[i] == XUP) {
+            if (i == XUP) {
                 neighbor = "" + (location[X] + 1) + "," + 
     					         location[Y] + "," +
     					 	     location[Z];  
     			if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
-    			        System.out.println("did it work?");
-    			        return true; 
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || 
+    			        (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
+    			        locked = true; 
+    			    }
+    			    if (faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == DOME) {
+    					return false;
     			    }
     			}
     	    }    
-            if (faces[i] == XDOWN) {
+            if (i == XDOWN) {
                 neighbor = "" + (location[X] - 1) + "," + 
     					         location[Y] + "," +
     					 	     location[Z];  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XUP) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(XUP) == DOME)){
-    			        System.out.println("did it work?");
-    			        return true; 
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XUP) == EMPTY) || 
+    			        (faces[i] == EMPTY && board.get(neighbor).getFace(XUP) == DOME)){
+    			        locked = true; 
+    			    }
+    			    if (faces[i] == DOME && board.get(neighbor).getFace(XUP) == DOME) {
+    					return false;
     			    }
     			}
             }
-            if (faces[i] == YUP) {
+            if (i == YUP) {
                 neighbor = "" + location[X] + "," + 
     					       (location[Y] + 1) + "," +
     					 	    location[Z];  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(YDOWN) == DOME)){
-    			        System.out.println("did it work?");
-    			        return true; 
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YDOWN) == EMPTY) || 
+    			        (faces[i] == EMPTY && board.get(neighbor).getFace(YDOWN) == DOME)){
+    			        locked = true; 
+    			    }
+    			    if (faces[i] == DOME && board.get(neighbor).getFace(YDOWN) == DOME) {
+    					return false;
     			    }
     			}
             }
-            if (faces[i] == YDOWN) {
+            if (i == YDOWN) {
                 neighbor = "" + location[X] + "," + 
     					       (location[Y] - 1) + "," +
     					 	    location[Z];  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YUP) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(YUP) == DOME)){
-    			        System.out.println("did it work?");
-    			        return true; 
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YUP) == EMPTY) || 
+    			        (faces[i] == EMPTY && board.get(neighbor).getFace(YUP) == DOME)){
+    			        locked = true; 
+    			    }
+    			    if (faces[i] == DOME && board.get(neighbor).getFace(YUP) == DOME) {
+    					return false;
     			    }
     			}
             }
-            if (faces[i] == ZUP) {
+            if (i == ZUP) {
                 neighbor = "" + location[X] + "," + 
     					        location[Y] + "," +
     					 	   (location[Z] + 1);  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZDOWN) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(ZDOWN) == DOME)){
-    			        System.out.println("did it work?");
-    			        return true; 
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZDOWN) == EMPTY) || 
+    			        (faces[i] == EMPTY && board.get(neighbor).getFace(ZDOWN) == DOME)){
+    			        locked = true; 
+    			    }
+    			    if (faces[i] == DOME && board.get(neighbor).getFace(ZDOWN) == DOME) {
+    					return false;
     			    }
     			}
             }
-            if (faces[i] == ZDOWN) {
+            if (i == ZDOWN) {
                 neighbor = "" + location[X] + "," + 
     					        location[Y] + "," +
     					 	   (location[Z] - 1);  
                 if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZUP) == EMPTY) || (faces[i] == EMPTY && board.get(neighbor).getFace(ZUP) == DOME)){
-    			        System.out.println("did it work?");
-    			        return true; 
+    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZUP) == EMPTY) || 
+    			        (faces[i] == EMPTY && board.get(neighbor).getFace(ZUP) == DOME)){
+    			        locked = true; 
+    			    }
+    			    if (faces[i] == DOME && board.get(neighbor).getFace(ZUP) == DOME) {
+    					return false;
     			    }
     			}
             }   
         }
-        return false;
+        return locked;
     }
 
     public boolean twoSceptreSameColor() {

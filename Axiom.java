@@ -35,7 +35,7 @@ public class Axiom implements BoardGame{
         Cube b5 = new Cube(0,0,1, Cube.YDOWN, Cube.XDOWN, Cube.BLACK);
         b5.setBoard(board);
         board.put(b5.getName(), b5);
-        Cube b6 = new Cube(1,0,1, Cube.ZUP, Cube.XUP, Cube.BLACK);
+        Cube b6 = new Cube(1,0,1, Cube.ZUP, Cube.XDOWN, Cube.BLACK);
         b6.setBoard(board);
         board.put(b6.getName(), b6);
         
@@ -56,7 +56,7 @@ public class Axiom implements BoardGame{
         Cube w5 = new Cube(0,1,1, Cube.YUP, Cube.XUP, Cube.WHITE);
         w5.setBoard(board);
         board.put(w5.getName(), w5);
-        Cube w6 = new Cube(-1,1,1, Cube.ZUP, Cube.XDOWN, Cube.WHITE);
+        Cube w6 = new Cube(-1,1,1, Cube.ZUP, Cube.XUP, Cube.WHITE);
         w6.setBoard(board);
         board.put(w6.getName(), w6);
     }
@@ -133,6 +133,17 @@ public class Axiom implements BoardGame{
         return false;
     }
 
+	public int freeCubes(int p) {
+		int count = 0;
+		for (String k : new HashSet<String>(board.keySet())) {
+			Cube c = board.get(k);
+			if (c.isFree() && c.getColor() == p) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	// JMARTIN2 TO DO
 	// Generate a list of strings representing the possible moves
 	// for the Player p. num of Player is color.
@@ -142,7 +153,7 @@ public class Axiom implements BoardGame{
 		// piece together string
 		// evaluate each cube
 		int count = 0;
-		for (String k : board.keySet()) {
+		for (String k : new HashSet<String>(board.keySet())) {
 
 			Cube c = board.get(k);
 			
@@ -150,22 +161,52 @@ public class Axiom implements BoardGame{
 			if (c.isFree() && c.getColor() == p.getNum()) {
 			
 				// find all locations where this cube can be placed
+				HashSet<String> spots = new HashSet<String>();
 				for (String r : board.keySet()) {
 					if (!r.equals(k)) {
 					
 						// find free faces not under the table.
 						Cube c2 = board.get(r);
-						for (int i : c2.freeFaces()) {
+						for (String n : c2.freeFaces()) {
 				
-							// for each possible rotation to be in this space
-							//System.out.println(c + " " + c2 + " on face " + i);							
+							spots.add(n);
 							count++;
 						}
 						
-						// find places with domes that fit into this cube
-						
 					}
 				}
+				board.remove(k);
+				for (String s : spots) {
+					//System.out.println(s);
+					if (c.secondDome() == Cube.NONE) {
+						for (int i = 0; i < 6; i++) {
+							Cube t = new Cube(s, i, -1, c.getColor());
+							t.setBoard(board);
+							board.put(s, t);
+							if (t.legal()) {
+								moves.add("C(" + c.getName() + ") C(" + s + ")" + 
+									Cube.fnames[i] + " ");
+								//System.out.println("LEGAL");
+							}
+							board.remove(s);
+						}
+					} else {
+						for (int i = 0; i < 5; i++) {
+							for (int j = i + 1; j < 6; j++) {
+								Cube t = new Cube(s, i, j, c.getColor());
+								t.setBoard(board);
+								board.put(s, t);
+								if (t.legal()) {
+									moves.add("C(" + c.getName() + ") C(" + s + ")" + 
+										Cube.fnames[i] + " " + Cube.fnames[j]);
+									//System.out.println("LEGAL");
+								}
+								board.remove(s);
+							}
+						}
+					}
+				}
+				board.put(k, c);
 			}
 			
 			// SCEPTRE MOVES PLEASE AVERT YOUR EYES FROM MY UGLY UGLY CODE..
@@ -1172,8 +1213,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 4);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 4);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 2);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 2);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);

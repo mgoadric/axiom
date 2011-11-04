@@ -221,18 +221,18 @@ public class Player {
         return s;
     }
 
-
     // The default player defines a very simple score function
     // You will write the score function in the MancalaPlayer below
     // to improve on this function.
     public int score(BoardGame board) {
-        // Returns the score for this player given the state of the board """
-        if (board.hasWon( this.num )) {
+        // Returns the score for this player given the state of the board
+        Axiom b = (Axiom)board;
+        if (board.hasWon(this.num)) {
             return 100;
-        } else if (board.hasWon( this.opp )) {
-            return 0;
+        } else if (board.hasWon(this.opp)) {
+            return -100;
         } else {
-            return 50;
+            return b.freeCubes(this.num) - b.freeCubes(this.opp);
         }
     }
 
@@ -263,7 +263,7 @@ public class Player {
         } else {
             System.out.println("Unknown player type");
         }
-        System.out.println("Making move" + board.showMove(move));
+        System.out.println("" + num + ": Making move " + board.showMove(move));
         return move;
     }
 } 
