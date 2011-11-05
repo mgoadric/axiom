@@ -398,6 +398,7 @@ public class Cube {
     }
     
     // Rotate the cube in the direction d, being one of X, Y or Z
+    // MHG 11/5/2011 Ended up not being used..
     public void rotate(int d) {
         if (d == Y) {
             int temp = faces[XUP];
@@ -537,7 +538,7 @@ public class Cube {
     
     public static void main (String args[]) {
         HashMap<String, Cube> b = new HashMap<String, Cube>();
-        Cube stuff = new Cube(-1, 0, 2, XUP, NONE, BLACK);
+        Cube stuff = new Cube(-1, 0, 2, YDOWN, XDOWN, BLACK);
         stuff.addSceptre(ZUP, BLACK);
         stuff.setBoard(b);
         b.put(stuff.getName(), stuff);

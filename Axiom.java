@@ -192,7 +192,9 @@ public class Axiom implements BoardGame{
 						}
 					} else {
 						for (int i = 0; i < 5; i++) {
-							for (int j = i + 1; j < 6; j++) {
+							for (int j = ((i + 1) % 2) + i + 1; j < 6; j++) {
+								// MHG 11/5/2011 FIX 
+								// cannot be opposite faces on dome, must be adjacent
 								Cube t = new Cube(s, i, j, c.getColor());
 								t.setBoard(board);
 								board.put(s, t);
@@ -1213,8 +1215,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 2);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 2);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 4);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 4);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);
