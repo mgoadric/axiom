@@ -162,6 +162,7 @@ public class Axiom implements BoardGame{
 			
 				// find all locations where this cube can be placed
 				HashSet<String> spots = new HashSet<String>();
+				HashSet<String> sceptlocs = new HashSet<String>();
 				for (String r : board.keySet()) {
 					if (!r.equals(k)) {
 					
@@ -172,12 +173,23 @@ public class Axiom implements BoardGame{
 							spots.add(n);
 							count++;
 						}
-						
+						// MHG 11/5/2011 add all sceptre locs to set
+						if (c2.firstSceptre() != Cube.NONE) {
+							sceptlocs.add(c2.getNeighborString(c2.firstSceptre()));
+						}
 					}
 				}
-				board.remove(k);
-				for (String s : spots) {
+				// MHG 11/5/2011 Need to remove faces where sceptres live...
+				//System.out.println("Sceptre locs");
+				for (String s : sceptlocs) {
 					//System.out.println(s);
+					spots.remove(s);
+				}
+				
+				board.remove(k);
+				//System.out.println("Free Faces");
+				for (String s : spots) {
+					System.out.println(s);
 					if (c.secondDome() == Cube.NONE) {
 						for (int i = 0; i < 6; i++) {
 							Cube t = new Cube(s, i, -1, c.getColor());

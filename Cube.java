@@ -218,6 +218,23 @@ public class Cube {
     	return null;
     }
 
+    public String getNeighborString(int f) {
+    	if (f == ZUP) {
+    		return "" + getX() + "," + getY() + "," + (getZ() + 1);
+    	} else if (f == ZDOWN) {
+    		return "" + getX() + "," + getY() + "," + (getZ() - 1);    	
+    	} else if (f == YUP) {
+    		return "" + getX() + "," + (getY() + 1) + "," + getZ();    	
+    	} else if (f == YDOWN) {
+    		return "" + getX() + "," + (getY() - 1) + "," + getZ();    	
+    	} else if (f == XUP) {
+    		return "" + (getX() + 1) + "," + getY() + "," + getZ();    	
+    	} else if (f == XDOWN) {
+    		return "" + (getX() - 1)+ "," + getY() + "," + getZ();    	
+    	}
+    	return null;
+    }
+
 	public Cube getNeighbor(int dx, int dy, int dz) {
 		return board.get("" + (getX() + dx) + "," + (getY() + dy) + "," + (getZ() + dz));
 	}
