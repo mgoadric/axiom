@@ -443,50 +443,14 @@ public class Cube {
     // Use the notation from the play by email paper
     public String toString() {
         String c = "C (" + getX() + "," + getY() + "," + getZ() + ")";
-        int fd = firstDome();
-        if (fd == XUP) {
-            c += "x+";
-        }
-        else if (fd == XDOWN) {
-            c += "x-";
-        }
-        else if (fd == YUP) {
-            c += "y+";
-        }
-        else if (fd == YDOWN) {
-            c += "y-";
-        }
-        else if (fd == ZUP) {
-            c += "z+";
-        }
-        else if (fd == ZDOWN) {
-            c += "z-";
-        }
+        c += fnames[firstDome()];
         if (secondDome() != NONE) {
-            int sd = secondDome();
-            if (sd == XUP) {
-                c += " x+";
-            }
-            else if (sd == XDOWN) {
-                c += " x-";
-            }
-            else if (sd == YUP) {
-                c += " y+";
-            }
-            else if (sd == YDOWN) {
-                c += " y-";
-            }
-            else if (sd == ZUP) {
-               c += " z+";
-            }
-            else if (sd == ZDOWN) {
-                c += " z-";
-            }
+        	c += " " + fnames[secondDome()];
         }
         if (color == WHITE) {
-            c += " (white) ";
+            c = " (white) " + c;
         } else {
-            c += " (black) ";
+            c = " (black) " + c;
         }
 
         return c;
@@ -495,62 +459,27 @@ public class Cube {
     // Use the notation from the play by email paper
     public String toSceptreString() {
         String t = "";
+        String y = "";
         String s = "S (" + getX() + "," + getY() + "," + getZ() + ")";
         if (firstSceptre() != NONE) {
-            t += s;
-            int fs = firstSceptre();
-            if (fs == XUP) {
-                t += "x+";
-            }
-            else if (fs == XDOWN) {
-                t += "x-";
-            }
-            else if (fs == YUP) {
-                t += "y+";
-            }
-            else if (fs == YDOWN) {
-                t += "y-";
-            }
-            else if (fs == ZUP) {
-                t += "z+";
-            }
-            else if (fs == ZDOWN) {
-                t += "z-";
-            }
+            t += s + fnames[firstSceptre()];
             if (getFace(firstSceptre()) == WHITE) {
-                t += " (white) ";
+                t = " (white) " + t;
             } else {
-                t += " (black) ";
+                t = " (black) " + t;
             }
+            y += t;
             if (secondSceptre() != NONE) {
-                t += "\n" + s;
-                int ss = secondSceptre();
-                if (ss == XUP) {
-                    t += " x+";
-                }
-                else if (ss == XDOWN) {
-                    t += " x-";
-                }
-                else if (ss == YUP) {
-                    t += " y+";
-                }
-                else if (ss == YDOWN) {
-                    t += " y-";
-                }
-                else if (ss == ZUP) {
-                    t += " z+";
-                }
-                else if (ss == ZDOWN) {
-                    t += " z-";
-                }
+                t = s + fnames[secondSceptre()];
                 if (getFace(secondSceptre()) == WHITE) {
-                    t += " (white) ";
+                    t = " (white) " + t;
                 } else {
-                    t += " (black) ";
+                    t = " (black) " + t;
                 }
-            }
-         }
-        return t;
+            	y += "\n" + t;
+           	}
+        }
+        return y;
     }
     
     public static void main (String args[]) {

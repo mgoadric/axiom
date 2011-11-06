@@ -189,7 +189,7 @@ public class Axiom implements BoardGame{
 				board.remove(k);
 				//System.out.println("Free Faces");
 				for (String s : spots) {
-					System.out.println(s);
+					//System.out.println(s);
 					if (c.secondDome() == Cube.NONE) {
 						for (int i = 0; i < 6; i++) {
 							Cube t = new Cube(s, i, -1, c.getColor());
@@ -1227,8 +1227,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 4);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 4);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 4);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 3);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);
