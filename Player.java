@@ -263,7 +263,7 @@ public class Player {
         } else {
             System.out.println("Unknown player type");
         }
-        System.out.println("" + num + ": Making move " + board.showMove(move));
+        System.out.println("" + num + ": Making move " + move + " " + board.showMove(move));
         return move;
     }
 } 

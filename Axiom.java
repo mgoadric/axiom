@@ -229,7 +229,8 @@ public class Axiom implements BoardGame{
 				// find all places where this sceptre can be placed
 				int face = c.firstSceptre();
 				
-				// DIAGONAL in same plane
+				// DIAGONAL in same plane 
+				// COMPRESS THIS TO ONE CASE SOMEHOW
 				if (face == Cube.ZUP || face == Cube.ZDOWN) {
 					
 					int zmod = 1;
@@ -993,7 +994,7 @@ public class Axiom implements BoardGame{
 								if (!moves.contains(m)) {
 									moves.add(m);
 									nei = true;
-									dir = Cube.XDOWN;
+									dir = Cube.XUP;
 									cur = b;
 								    count++;
 								}
@@ -1227,8 +1228,8 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
         Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 4);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 3);
+        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.HUMAN, 4);
+        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.HUMAN, 3);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
         Host.hostGame(g, p1, p2);
