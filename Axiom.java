@@ -144,7 +144,6 @@ public class Axiom implements BoardGame{
 		return count;
 	}
 
-	// JMARTIN2 TO DO
 	// Generate a list of strings representing the possible moves
 	// for the Player p. num of Player is color.
 	public void generateMoves(Player p) {
@@ -256,7 +255,7 @@ public class Axiom implements BoardGame{
 														(cur.getY() + ymod[i]) + "," +
 														(cur.getZ() + zmod);
 								if (board.get(neighbor2) == null) {
-									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")z" + zc + " ");
+									moves.add(0, "S(" + c.getName() + ") S(" + who.getName() + ")z" + zc + " ");
 									cur = who;
 									count++;
 								} else {
@@ -294,7 +293,7 @@ public class Axiom implements BoardGame{
 														(cur.getY() + ymod[i]) + "," +
 														(cur.getZ() + zmod[i]);
 								if (board.get(neighbor2) == null) {
-									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")x" + xc + " " );
+									moves.add(0, "S(" + c.getName() + ") S(" + who.getName() + ")x" + xc + " " );
 									cur = who;
 									count++;
 								} else {
@@ -333,7 +332,7 @@ public class Axiom implements BoardGame{
 														(cur.getY() + ymod) + "," +
 														(cur.getZ() + zmod[i]);
 								if (board.get(neighbor2) == null) {
-									moves.add("S(" + c.getName() + ") S(" + who.getName() + ")y" + yc + " ");
+									moves.add(0, "S(" + c.getName() + ") S(" + who.getName() + ")y" + yc + " ");
 									cur = who;
 									count++;
 									nei = true;
@@ -343,7 +342,10 @@ public class Axiom implements BoardGame{
 					}
 				}
 				
-				// ORTHOGONAL wrapping 
+				// ORTHOGONAL wrapping. There are six ways to move orthogonally
+				// since there will never be overhangs, and we cannot go under the board
+				// we can handle the X and Y directions differently than the Z direction,
+				// where complete loops are possible
 				Cube cur = c;
 				int dir = face;
 				boolean nei = true;  // Z, XUP
@@ -360,14 +362,14 @@ public class Axiom implements BoardGame{
 						// check three placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.XUP)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")x+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")x+ ");
 								nei = true;
 								dir = Cube.XUP;
 							    count++;
 							}
 						} else if (b == null) {
 							if (a.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = a;
@@ -375,7 +377,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.XDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")x- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")x- ");
 								nei = true;
 								dir = Cube.XDOWN;
 								cur = b;
@@ -394,7 +396,7 @@ public class Axiom implements BoardGame{
 						if (a == null) {
 						} else if (b == null) {
 							if (a.isEmpty(Cube.XUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")x+ ");
 								nei = true;
 								dir = Cube.XUP;
 								cur = a;
@@ -402,7 +404,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = b;
@@ -415,14 +417,14 @@ public class Axiom implements BoardGame{
 						// check two placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 							    count++;
 							}
 						} else {
 							if (a.isEmpty(Cube.XDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")x- ");
 								nei = true;
 								dir = Cube.XDOWN;
 								cur = a;
@@ -447,14 +449,14 @@ public class Axiom implements BoardGame{
 						// check three placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.XDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")x- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")x- ");
 								nei = true;
 								dir = Cube.XDOWN;
 							    count++;
 							}
 						} else if (b == null) {
 							if (a.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = a;
@@ -462,7 +464,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.XUP)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")x+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")x+ ");
 								nei = true;
 								dir = Cube.XUP;
 								cur = b;
@@ -481,7 +483,7 @@ public class Axiom implements BoardGame{
 						if (a == null) {
 						} else if (b == null) {
 							if (a.isEmpty(Cube.XDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")x- ");
 								nei = true;
 								dir = Cube.XDOWN;
 								cur = a;
@@ -489,7 +491,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = b;
@@ -502,14 +504,14 @@ public class Axiom implements BoardGame{
 						// check two placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 							    count++;
 							}
 						} else {
 							if (a.isEmpty(Cube.XUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")x+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")x+ ");
 								nei = true;
 								dir = Cube.XUP;
 								cur = a;
@@ -534,14 +536,14 @@ public class Axiom implements BoardGame{
 						// check three placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.YUP)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")y+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")y+ ");
 								nei = true;
 								dir = Cube.YUP;
 							    count++;
 							}
 						} else if (b == null) {
 							if (a.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = a;
@@ -549,7 +551,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.YDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")y- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")y- ");
 								nei = true;
 								dir = Cube.YDOWN;
 								cur = b;
@@ -568,7 +570,7 @@ public class Axiom implements BoardGame{
 						if (a == null) {
 						} else if (b == null) {
 							if (a.isEmpty(Cube.YUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")y+ ");
 								nei = true;
 								dir = Cube.YUP;
 								cur = a;
@@ -576,7 +578,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = b;
@@ -589,14 +591,14 @@ public class Axiom implements BoardGame{
 						// check two placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 							    count++;
 							}
 						} else {
 							if (a.isEmpty(Cube.YDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")y- ");
 								nei = true;
 								dir = Cube.YDOWN;
 								cur = a;
@@ -621,14 +623,14 @@ public class Axiom implements BoardGame{
 						// check three placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.YDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")y- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")y- ");
 								nei = true;
 								dir = Cube.YDOWN;
 							    count++;
 							}
 						} else if (b == null) {
 							if (a.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = a;
@@ -636,7 +638,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.YUP)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")y+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")y+ ");
 								nei = true;
 								dir = Cube.YUP;
 								cur = b;
@@ -655,7 +657,7 @@ public class Axiom implements BoardGame{
 						if (a == null) {
 						} else if (b == null) {
 							if (a.isEmpty(Cube.YDOWN)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y- ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")y- ");
 								nei = true;
 								dir = Cube.YDOWN;
 								cur = a;
@@ -663,7 +665,7 @@ public class Axiom implements BoardGame{
 							}						
 						} else {
 							if (b.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 								cur = b;
@@ -676,14 +678,14 @@ public class Axiom implements BoardGame{
 						// check two placements
 						if (a == null) {
 							if (cur.isEmpty(Cube.ZUP)) {
-								moves.add("S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")z+ ");
 								nei = true;
 								dir = Cube.ZUP;
 							    count++;
 							}
 						} else {
 							if (a.isEmpty(Cube.YUP)) {
-								moves.add("S(" + c.getName() + ") S(" + a.getName() + ")y+ ");
+								moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")y+ ");
 								nei = true;
 								dir = Cube.YUP;
 								cur = a;
@@ -710,7 +712,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.YDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")y- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YDOWN;
 									cur = b;
@@ -721,7 +723,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.XUP)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")x+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XUP;
 									cur = a;
@@ -732,7 +734,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.YUP)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")y+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YUP;
 								    count++;
@@ -749,7 +751,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.XUP)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")x+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XUP;
 									cur = b;
@@ -760,7 +762,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.YUP)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")y+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YUP;
 									cur = a;
@@ -771,7 +773,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.XDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")x- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XDOWN;
 								    count++;
@@ -788,7 +790,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.YUP)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")y+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YUP;
 									cur = b;
@@ -799,7 +801,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.XDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")x- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XDOWN;
 									cur = a;
@@ -810,7 +812,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.YDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")y- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YDOWN;
 								    count++;
@@ -827,7 +829,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.XDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")x- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XDOWN;
 									cur = b;
@@ -838,7 +840,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.YDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")y- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YDOWN;
 									cur = a;
@@ -849,7 +851,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.XUP)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")x+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XUP;
 								    count++;
@@ -875,7 +877,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.YUP)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")y+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YUP;
 									cur = b;
@@ -886,7 +888,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.XUP)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")x+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XUP;
 									cur = a;
@@ -897,7 +899,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.YDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")y- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YDOWN;
 								    count++;
@@ -914,7 +916,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.XDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")x- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XDOWN;
 									cur = b;
@@ -925,7 +927,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.YUP)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")y+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YUP;
 									cur = a;
@@ -936,7 +938,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.XUP)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")x+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XUP;
 								    count++;
@@ -953,7 +955,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.YDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")y- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YDOWN;
 									cur = b;
@@ -964,7 +966,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.XDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")x- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XDOWN;
 									cur = a;
@@ -975,7 +977,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.YUP)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")y+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YUP;
 								    count++;
@@ -992,7 +994,7 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(Cube.XUP)) {
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")x+ ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XUP;
 									cur = b;
@@ -1003,7 +1005,7 @@ public class Axiom implements BoardGame{
 							if (a.isEmpty(Cube.YDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")y- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.YDOWN;
 									cur = a;
@@ -1014,7 +1016,7 @@ public class Axiom implements BoardGame{
 							if (cur.isEmpty(Cube.XDOWN)) {
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")x- ";
 								if (!moves.contains(m)) {
-									moves.add(m);
+									moves.add(0, m);
 									nei = true;
 									dir = Cube.XDOWN;
 								    count++;
@@ -1226,12 +1228,26 @@ public class Axiom implements BoardGame{
         return s;
     }
 
+	public static void randomGames() {
+	    int[] wins = new int[3];
+    	for (int i = 0; i < 1000; i++) {
+			Axiom g = new Axiom();
+			Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 4);
+			Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 4);
+			g.firstPlayer(p1);
+			g.secondPlayer(p2);
+			int who = Host.hostGame(g, p1, p2);
+			wins[who]++;
+		}
+		System.out.println("0: " + wins[0] + " 1: " + wins[1] + " tie: " + wins[2]);
+	}
+
     public static void main (String args[]) {
-        Axiom g = new Axiom();
-        Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.HUMAN, 4);
-        Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.HUMAN, 3);
-        g.firstPlayer(p1);
-        g.secondPlayer(p2);
-        Host.hostGame(g, p1, p2);
+		Axiom g = new Axiom();
+		Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 4);
+		Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 4);
+		g.firstPlayer(p1);
+		g.secondPlayer(p2);
+		Host.hostGame(g, p1, p2);
     }
 }
