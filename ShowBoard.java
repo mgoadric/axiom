@@ -8,9 +8,16 @@ import java.io.*;
 
 public class ShowBoard {
 
-  public ShowBoard(String filename) {
-    SimpleUniverse universe = new SimpleUniverse();
-    BranchGroup group = new BranchGroup();
+  public static SimpleUniverse universe = new SimpleUniverse();
+  public static BranchGroup group = null;
+
+
+  public ShowBoard(Scanner scan) {
+    if (group != null) {
+        group.detach();
+    }
+    group = new BranchGroup();
+    group.setCapability(BranchGroup.ALLOW_DETACH);
     TransformGroup g2 = new TransformGroup();
     g2.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
     g2.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -72,8 +79,6 @@ public class ShowBoard {
         }       
     }
 
-    try {
-    Scanner scan = new Scanner(new File(filename));
     while (scan.hasNext()) {    
         String line = scan.nextLine();
         String color = line.substring(2, 7);
@@ -185,9 +190,9 @@ public class ShowBoard {
             Transform3D transform = new Transform3D();
             Cylinder cone = null;
             if (color.equals("black")) {
-                cone = new Cylinder(0.15f, 1f, redAppear);
+                cone = new Cylinder(0.15f, 0.9f, redAppear);
             } else {
-                cone = new Cylinder(0.15f, 1f, whiteAppear);
+                cone = new Cylinder(0.15f, 0.9f, whiteAppear);
             }
             Vector3f vector = new Vector3f(x, y, z);
             transform.setTranslation(vector);
@@ -200,9 +205,7 @@ public class ShowBoard {
             g2.addChild(tg);
         }
     }
-    } catch (FileNotFoundException fnfe) {
-    }
-    Color3f light1Color = new Color3f(1f, 1f, 1f); // green light
+        Color3f light1Color = new Color3f(1f, 1f, 1f); // green light
     BoundingSphere bounds =
 	    new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
     Vector3f light1Direction  = new Vector3f(4.0f, -7.0f, -12.0f);
@@ -212,18 +215,26 @@ public class ShowBoard {
     group.addChild(light1);
     //universe.getViewingPlatform().setNominalViewingTransform();
 
+
+    // add the group of objects to the Universe
+    universe.addBranchGraph(group);
+}
+
+    public static void setupUniverse() {
     ViewingPlatform vp = universe.getViewingPlatform();
     TransformGroup View_TransformGroup = vp.getMultiTransformGroup().getTransformGroup(0);
     Transform3D View_Transform3D = new Transform3D();
     View_TransformGroup.getTransform(View_Transform3D);
     View_Transform3D.setTranslation(new Vector3f(0.0f,0.0f,20.0f));
-	View_TransformGroup.setTransform(View_Transform3D); 
-
-
-    // add the group of objects to the Universe
-    universe.addBranchGraph(group);
+	View_TransformGroup.setTransform(View_Transform3D);
 }
+
   public static void main(String[] args) {
-    new ShowBoard(args[0]);
+    try {
+        Scanner scan = new Scanner(new File(args[0]));
+        new ShowBoard(scan);
+    } catch (FileNotFoundException fnfe) {
+    }
+
   }
 }

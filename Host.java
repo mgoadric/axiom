@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * Hosts a game between two players
  */
@@ -7,9 +9,17 @@ public class Host {
         Player currPlayer = player1; 
         Player waitPlayer = player2;
         int count = 0;
+        ShowBoard.setupUniverse();
         while (!(game.gameOver())) {
             count++;
+            System.out.println("Current Board: Turn " + count);
             System.out.println(game);
+
+            try {
+                Thread.sleep(2000);
+                new ShowBoard(new Scanner(game.toString()));
+            } catch (InterruptedException ie) {
+            }
             int move = currPlayer.chooseMove(game);
             while (!(game.legalMove(currPlayer, move))) {
                 System.out.println("" + move + " is not legal");
@@ -25,7 +35,13 @@ public class Host {
         }
 
         // Someone just won the game! Tell us please!
+        System.out.println("Current Board: Final");
         System.out.println(game);
+        try {
+            Thread.sleep(2000);
+            new ShowBoard(new Scanner(game.toString()));
+        } catch (InterruptedException ie) {
+        }
         if (game.hasWon(currPlayer.getNum())) {
             System.out.println("Player " + currPlayer + " wins!");
             return currPlayer.getNum();

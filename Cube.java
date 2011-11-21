@@ -296,6 +296,14 @@ public class Cube {
     }
 
     public boolean legal() {
+    	// if you are not at Z level 1, you need support.
+    	if (location[Z] > 1) {
+    		String support = getNeighborString(ZDOWN);
+    		if (!board.containsKey(support)) {
+    			return false;
+    		}
+    	}
+    
         // do you have a locked dome and no conflicts DOME - DOME? *Denotes legal positioning*
         
         if (location[Z] == 1 && (firstDome() == ZDOWN || secondDome() == ZDOWN)) {
