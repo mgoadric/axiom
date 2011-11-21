@@ -144,6 +144,17 @@ public class Axiom implements BoardGame{
 		return count;
 	}
 
+	public int numCubes(int p) {
+		int count = 0;
+		for (String k : new HashSet<String>(board.keySet())) {
+			Cube c = board.get(k);
+			if (c.getColor() == p) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	// Generate a list of strings representing the possible moves
 	// for the Player p. num of Player is color.
 	public void generateMoves(Player p) {
@@ -1236,7 +1247,7 @@ public class Axiom implements BoardGame{
 			Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 4);
 			g.firstPlayer(p1);
 			g.secondPlayer(p2);
-			int who = Host.hostGame(g, p1, p2);
+			int who = Host.hostGame(g, p1, p2, false);
 			wins[who]++;
 		}
 		System.out.println("0: " + wins[0] + " 1: " + wins[1] + " tie: " + wins[2]);
@@ -1244,10 +1255,10 @@ public class Axiom implements BoardGame{
 
     public static void main (String args[]) {
 		Axiom g = new Axiom();
-		Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 2);
-		Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 2);
+		Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 4);
+		Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 4);
 		g.firstPlayer(p1);
 		g.secondPlayer(p2);
-		Host.hostGame(g, p1, p2);
+		Host.hostGame(g, p1, p2, true);
     }
 }

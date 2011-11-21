@@ -232,7 +232,8 @@ public class Player {
         } else if (board.hasWon(this.opp)) {
             return -100;
         } else {
-            return b.freeCubes(this.num) - b.freeCubes(this.opp);
+//            return b.freeCubes(this.num) - b.freeCubes(this.opp);
+            return b.numCubes(this.num) - b.numCubes(this.opp);
         }
     }
 

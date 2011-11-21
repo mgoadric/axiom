@@ -10,32 +10,44 @@ public class ShowBoard {
 
   public static SimpleUniverse universe = new SimpleUniverse();
   public static BranchGroup group = null;
+  public static TransformGroup g2 = null;
 
 
   public ShowBoard(Scanner scan) {
     if (group != null) {
         group.detach();
+    } else {
+        group = new BranchGroup();
+        group.setCapability(BranchGroup.ALLOW_DETACH);
+        g2 = new TransformGroup();
+        g2.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+        g2.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+        MouseRotate myMouseRotate = new MouseRotate();
+        myMouseRotate.setTransformGroup(g2);
+        myMouseRotate.setSchedulingBounds(new BoundingSphere());
+        group.addChild(myMouseRotate);
+    
+        MouseTranslate myMouseTranslate = new MouseTranslate();
+        myMouseTranslate.setTransformGroup(g2);
+        myMouseTranslate.setSchedulingBounds(new BoundingSphere());
+        group.addChild(myMouseTranslate);
+    
+        MouseZoom myMouseZoom = new MouseZoom();
+        myMouseZoom.setTransformGroup(g2);
+        myMouseZoom.setSchedulingBounds(new BoundingSphere());
+        group.addChild(myMouseZoom);
+        group.addChild(g2);
+        Color3f light1Color = new Color3f(1f, 1f, 1f); // green light
+        BoundingSphere bounds =
+            new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
+        Vector3f light1Direction  = new Vector3f(4.0f, -7.0f, -12.0f);
+        DirectionalLight light1
+          = new DirectionalLight(light1Color, light1Direction);
+        light1.setInfluencingBounds(bounds);
+        group.addChild(light1);
+
     }
-    group = new BranchGroup();
-    group.setCapability(BranchGroup.ALLOW_DETACH);
-    TransformGroup g2 = new TransformGroup();
-    g2.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-    g2.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-    MouseRotate myMouseRotate = new MouseRotate();
-    myMouseRotate.setTransformGroup(g2);
-    myMouseRotate.setSchedulingBounds(new BoundingSphere());
-    group.addChild(myMouseRotate);
-
-    MouseTranslate myMouseTranslate = new MouseTranslate();
-    myMouseTranslate.setTransformGroup(g2);
-    myMouseTranslate.setSchedulingBounds(new BoundingSphere());
-    group.addChild(myMouseTranslate);
-
-    MouseZoom myMouseZoom = new MouseZoom();
-    myMouseZoom.setTransformGroup(g2);
-    myMouseZoom.setSchedulingBounds(new BoundingSphere());
-    group.addChild(myMouseZoom);
-    group.addChild(g2);
+    g2.removeAllChildren();
     
     Material white = new Material( );
     white.setAmbientColor(  0.3f, 0.3f, 0.3f );
@@ -205,14 +217,6 @@ public class ShowBoard {
             g2.addChild(tg);
         }
     }
-        Color3f light1Color = new Color3f(1f, 1f, 1f); // green light
-    BoundingSphere bounds =
-	    new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
-    Vector3f light1Direction  = new Vector3f(4.0f, -7.0f, -12.0f);
-    DirectionalLight light1
-      = new DirectionalLight(light1Color, light1Direction);
-    light1.setInfluencingBounds(bounds);
-    group.addChild(light1);
     //universe.getViewingPlatform().setNominalViewingTransform();
 
 
