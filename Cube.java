@@ -24,6 +24,7 @@ public class Cube {
     public static final int ZDOWN = 5;
     public static final int NONE = -1;
 	public static final String[] fnames = {"x+", "x-", "y+", "y-", "z+", "z-"};
+	public static final int[] opposite ={XDOWN, XUP, YDOWN, YUP, ZDOWN, ZUP};
 
     // Data members
     private int[] location;
@@ -297,10 +298,18 @@ public class Cube {
 
     public boolean legal() {
     	// if you are not at Z level 1, you need support.
+    	boolean locked = false;
     	if (location[Z] > 1) {
     		String support = getNeighborString(ZDOWN, 1);
     		if (!board.containsKey(support)) {
     			return false;
+    		} else {
+				if ((faces[ZDOWN] == DOME && board.get(support).getFace(ZUP) == EMPTY) || 
+					(faces[ZDOWN] == EMPTY && board.get(support).getFace(ZUP) == DOME)){
+					locked = true; 
+				} else {
+					return false;
+				}
     		}
     	}
     
@@ -309,93 +318,18 @@ public class Cube {
         if (location[Z] == 1 && (firstDome() == ZDOWN || secondDome() == ZDOWN)) {
         	return false;
         }
-        boolean locked = false;
+
         for (int i = 0; i < faces.length; i++) {
-            String neighbor = null;
-            if (i == XUP) {
-                neighbor = "" + (location[X] + 1) + "," + 
-    					         location[Y] + "," +
-    					 	     location[Z];  
-    			if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == EMPTY) || 
-    			        (faces[i] == EMPTY && board.get(neighbor).getFace(XDOWN) == DOME)){
-    			        locked = true; 
-    			    }
-    			    if (faces[i] == DOME && board.get(neighbor).getFace(XDOWN) == DOME) {
-    					return false;
-    			    }
-    			}
-    	    }    
-            if (i == XDOWN) {
-                neighbor = "" + (location[X] - 1) + "," + 
-    					         location[Y] + "," +
-    					 	     location[Z];  
-                if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(XUP) == EMPTY) || 
-    			        (faces[i] == EMPTY && board.get(neighbor).getFace(XUP) == DOME)){
-    			        locked = true; 
-    			    }
-    			    if (faces[i] == DOME && board.get(neighbor).getFace(XUP) == DOME) {
-    					return false;
-    			    }
-    			}
-            }
-            if (i == YUP) {
-                neighbor = "" + location[X] + "," + 
-    					       (location[Y] + 1) + "," +
-    					 	    location[Z];  
-                if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YDOWN) == EMPTY) || 
-    			        (faces[i] == EMPTY && board.get(neighbor).getFace(YDOWN) == DOME)){
-    			        locked = true; 
-    			    }
-    			    if (faces[i] == DOME && board.get(neighbor).getFace(YDOWN) == DOME) {
-    					return false;
-    			    }
-    			}
-            }
-            if (i == YDOWN) {
-                neighbor = "" + location[X] + "," + 
-    					       (location[Y] - 1) + "," +
-    					 	    location[Z];  
-                if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(YUP) == EMPTY) || 
-    			        (faces[i] == EMPTY && board.get(neighbor).getFace(YUP) == DOME)){
-    			        locked = true; 
-    			    }
-    			    if (faces[i] == DOME && board.get(neighbor).getFace(YUP) == DOME) {
-    					return false;
-    			    }
-    			}
-            }
-            if (i == ZUP) {
-                neighbor = "" + location[X] + "," + 
-    					        location[Y] + "," +
-    					 	   (location[Z] + 1);  
-                if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZDOWN) == EMPTY) || 
-    			        (faces[i] == EMPTY && board.get(neighbor).getFace(ZDOWN) == DOME)){
-    			        locked = true; 
-    			    }
-    			    if (faces[i] == DOME && board.get(neighbor).getFace(ZDOWN) == DOME) {
-    					return false;
-    			    }
-    			}
-            }
-            if (i == ZDOWN) {
-                neighbor = "" + location[X] + "," + 
-    					        location[Y] + "," +
-    					 	   (location[Z] - 1);  
-                if (board.containsKey(neighbor)) {
-    			    if ((faces[i] == DOME && board.get(neighbor).getFace(ZUP) == EMPTY) || 
-    			        (faces[i] == EMPTY && board.get(neighbor).getFace(ZUP) == DOME)){
-    			        locked = true; 
-    			    }
-    			    if (faces[i] == DOME && board.get(neighbor).getFace(ZUP) == DOME) {
-    					return false;
-    			    }
-    			}
-            }   
+            String neighbor = getNeighborString(i, 1);
+			if (board.containsKey(neighbor)) {
+				if ((faces[i] == DOME && board.get(neighbor).getFace(opposite[i]) == EMPTY) || 
+					(faces[i] == EMPTY && board.get(neighbor).getFace(opposite[i]) == DOME)){
+					locked = true; 
+				}
+				if (faces[i] == DOME && board.get(neighbor).getFace(opposite[i]) == DOME) {
+					return false;
+				}
+			}   	      
         }
         return locked;
     }

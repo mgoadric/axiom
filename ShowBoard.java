@@ -108,9 +108,9 @@ public class ShowBoard {
             Transform3D transform = new Transform3D();
             Box cone = null;
             if (color.equals("black")) {
-                cone = new Box(0.49f, 0.49f, 0.49f, redAppear);
+                cone = new Box(0.4f, 0.4f, 0.4f, redAppear);
             } else {
-                cone = new Box(0.49f, 0.49f, 0.49f, whiteAppear);
+                cone = new Box(0.4f, 0.4f, 0.4f, whiteAppear);
             }
             Vector3f vector = new Vector3f(x, y, z);
             transform.setTranslation(vector);
