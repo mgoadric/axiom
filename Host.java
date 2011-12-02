@@ -5,6 +5,16 @@ import java.util.*;
  */
 public class Host {
     
+    public static int SLEEP = 500;
+    
+    public static void graphicsBoard(String boardstate) {
+        try {
+            Thread.sleep(SLEEP);
+            new ShowBoard(new Scanner(boardstate));
+        } catch (InterruptedException ie) {
+        } 
+    }
+    
     public static int hostGame(BoardGame game, Player player1, Player player2, boolean graphics) {
         Player currPlayer = player1; 
         Player waitPlayer = player2;
@@ -18,10 +28,13 @@ public class Host {
             System.out.println(game);
 
             if (graphics) {
-                try {
-                    Thread.sleep(1000);
-                    new ShowBoard(new Scanner(game.toString()));
-                } catch (InterruptedException ie) {
+                graphicsBoard(game.toString());
+                if (count == 1) {
+                    try {
+                        Thread.sleep(4000);
+                        new ShowBoard(new Scanner(game.toString()));
+                    } catch (InterruptedException ie) {
+                    } 
                 }
             }
             int move = currPlayer.chooseMove(game);
@@ -42,11 +55,7 @@ public class Host {
         System.out.println("Current Board: Final");
         System.out.println(game);
         if (graphics) {
-            try {
-                Thread.sleep(1000);
-                new ShowBoard(new Scanner(game.toString()));
-            } catch (InterruptedException ie) {
-            }
+            graphicsBoard(game.toString());
         }
         if (game.hasWon(currPlayer.getNum())) {
             System.out.println("Player " + currPlayer + " wins!");

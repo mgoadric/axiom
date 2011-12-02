@@ -233,7 +233,9 @@ public class Player {
             return -100;
         } else {
 //            return b.freeCubes(this.num) - b.freeCubes(this.opp);
-            return b.numCubes(this.num) - b.numCubes(this.opp);
+//            return b.numCubes(this.num) - b.numCubes(this.opp);
+            return b.freeCubes(this.num) + b.numCubes(this.num) - (b.freeCubes(this.opp) + b.numCubes(this.opp));
+//            return b.numCubes(this.num);
         }
     }
 

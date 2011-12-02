@@ -69,7 +69,7 @@ public class ShowBoard {
 
     Material red = new Material( );
     red.setAmbientColor(  0.3f, 0.3f, 0.3f );
-    red.setDiffuseColor(  1.0f, 0f, 0f );
+    red.setDiffuseColor(  0.0f, 1.0f, 0f );
     red.setEmissiveColor( 0.0f, 0.0f, 0.0f );
     red.setSpecularColor( 1.0f, 1.0f, 1.0f );
     red.setShininess( 64.0f );

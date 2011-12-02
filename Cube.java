@@ -218,19 +218,19 @@ public class Cube {
     	return null;
     }
 
-    public String getNeighborString(int f) {
+    public String getNeighborString(int f, int d) {
     	if (f == ZUP) {
-    		return "" + getX() + "," + getY() + "," + (getZ() + 1);
+    		return "" + getX() + "," + getY() + "," + (getZ() + d);
     	} else if (f == ZDOWN) {
-    		return "" + getX() + "," + getY() + "," + (getZ() - 1);    	
+    		return "" + getX() + "," + getY() + "," + (getZ() - d);    	
     	} else if (f == YUP) {
-    		return "" + getX() + "," + (getY() + 1) + "," + getZ();    	
+    		return "" + getX() + "," + (getY() + d) + "," + getZ();    	
     	} else if (f == YDOWN) {
-    		return "" + getX() + "," + (getY() - 1) + "," + getZ();    	
+    		return "" + getX() + "," + (getY() - d) + "," + getZ();    	
     	} else if (f == XUP) {
-    		return "" + (getX() + 1) + "," + getY() + "," + getZ();    	
+    		return "" + (getX() + d) + "," + getY() + "," + getZ();    	
     	} else if (f == XDOWN) {
-    		return "" + (getX() - 1)+ "," + getY() + "," + getZ();    	
+    		return "" + (getX() - d)+ "," + getY() + "," + getZ();    	
     	}
     	return null;
     }
@@ -298,7 +298,7 @@ public class Cube {
     public boolean legal() {
     	// if you are not at Z level 1, you need support.
     	if (location[Z] > 1) {
-    		String support = getNeighborString(ZDOWN);
+    		String support = getNeighborString(ZDOWN, 1);
     		if (!board.containsKey(support)) {
     			return false;
     		}
