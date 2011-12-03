@@ -243,36 +243,27 @@ public class Cube {
     	for (int i = 0; i < faces.length; i++) {
     		if (faces[i] == EMPTY || faces[i] == DOME) {
 				String neighbor = null;
-				String support = null;
+				Cube support = null;
     			if (i == XUP) {
-    				// TODO Fix with getNeighbor(x, y, z)
-    			    support = "" + (location[X] + 1) + "," + 
-    				 	    	    location[Y] + "," +
-    						       (location[Z] - 1);
-    			    if (location[Z] == 1 || board.get(support) != null) {
+    			    support = getNeighbor(1, 0, -1);
+    			    if (location[Z] == 1 || support != null) {
     			        neighbor = getNeighborString(i, 1);
     				}
     			} else if (i == YUP) {
-    			    support = "" + location[X] + "," + 
-    					    		(location[Y] + 1) + "," +
-    						       (location[Z] - 1);
-    			    if (location[Z] == 1 || board.get(support) != null) {
+    			    support = getNeighbor(0, 1, -1);
+    			    if (location[Z] == 1 || support != null) {
     			 	    neighbor = getNeighborString(i, 1);  
     				}
     			} else if (i == ZUP) {
     			 	neighbor = getNeighborString(i, 1);    						  
     			} else if (i == XDOWN) {
-    			    support = "" + (location[X] - 1) + "," + 
-    					    		location[Y] + "," +
-    						       (location[Z] - 1);
-    			    if (location[Z] == 1 || board.get(support) != null) {
+    			    support = getNeighbor(-1, 0, -1);
+    			    if (location[Z] == 1 || support != null) {
     			 	    neighbor = getNeighborString(i, 1);
     		        }
     			} else if (i == YDOWN) {
-    			    support = "" + location[X] + "," + 
-    					          (location[Y] - 1) + "," +
-    						      (location[Z] - 1);
-    			    if (location[Z] == 1 || board.get(support) != null) {
+    			    support = getNeighbor(0, -1, -1);
+    			    if (location[Z] == 1 || support != null) {
     			 	    neighbor = getNeighborString(i, 1);    			    			
     			    }
     			}

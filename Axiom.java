@@ -17,7 +17,8 @@ public class Axiom implements BoardGame{
     // constructor
     public Axiom() {
         // Initial Game-state
-        board = new HashMap<String, Cube>();
+        board = new HashMap<String, Cube>();        
+        
         Cube b1 = new Cube(-1,0,2, Cube.XUP, Cube.NONE, Cube.BLACK);
         b1.addSceptre(Cube.ZUP, Cube.BLACK);
         b1.setBoard(board); // link board to cube
@@ -58,7 +59,7 @@ public class Axiom implements BoardGame{
         board.put(w5.getName(), w5);
         Cube w6 = new Cube(-1,1,1, Cube.ZUP, Cube.XUP, Cube.WHITE);
         w6.setBoard(board);
-        board.put(w6.getName(), w6);
+        board.put(w6.getName(), w6);       
     }
     
     public Axiom(HashMap<String, Cube> board) {
@@ -464,6 +465,7 @@ public class Axiom implements BoardGame{
 				// TODO MHG 12/1/2011 cannot have two sceptres crossing
 				// TODO MHG 12/1/2011 cannot have a sceptre hit a cube on the opposite side
 
+				// CLOCKWISE and COUNTERCLOCKWISE
 				int[][] cmap = {{Cube.XUP, Cube.YUP, Cube.XDOWN, Cube.YDOWN},
 								{Cube.XUP, Cube.YDOWN, Cube.XDOWN, Cube.YUP}};
 				int[][] ax = {{0, -1, 0, 1},
@@ -489,7 +491,6 @@ public class Axiom implements BoardGame{
 					boolean nei = true;  
 					while (dir != -1 && nei) {
 						nei = false;
-						//System.out.println(cur);
 						Cube a = null;
 						Cube b = null;
 						
@@ -504,35 +505,41 @@ public class Axiom implements BoardGame{
 							if (b.isEmpty(cmap[i][prev])) { // -1
 								String m = "S(" + c.getName() + ") S(" + b.getName() + ")" + 
 													 Cube.fnames[cmap[i][prev]] + " ";
-								if (!moves.contains(m)) {
+								if (!sceptlocs.contains(b.getNeighborString(cmap[i][prev], 1)) && 
+								    !board.containsKey(b.getNeighborString(cmap[i][prev], 2)) &&
+								    !moves.contains(m)) {
 									moves.add(0, m);
-									nei = true;
-									dir = prev;
-									cur = b;
-									count++;
 								}
+								nei = true;
+								dir = prev;
+								cur = b;
+								count++;
 							}
 						} else if (a != null) {
 							if (a.isEmpty(cmap[i][dir])) { // 0
 								String m = "S(" + c.getName() + ") S(" + a.getName() + ")" + 
 													 Cube.fnames[cmap[i][dir]] + " ";
-								if (!moves.contains(m)) {
+								if (!sceptlocs.contains(a.getNeighborString(cmap[i][dir], 1)) && 
+								    !board.containsKey(a.getNeighborString(cmap[i][dir], 2)) &&
+								    !moves.contains(m)) {
 									moves.add(0, m);
-									nei = true;
-									cur = a;
-									count++;
 								}
+								nei = true;
+								cur = a;
+								count++;
 							}
 						} else {
 							if (cur.isEmpty(cmap[i][next])) { // 1
 								String m = "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
 													 Cube.fnames[cmap[i][next]] + " ";
-								if (!moves.contains(m)) {
+								if (!sceptlocs.contains(cur.getNeighborString(cmap[i][next], 1)) && 
+								    !board.containsKey(cur.getNeighborString(cmap[i][next], 2)) &&
+								    !moves.contains(m)) {
 									moves.add(0, m);
-									nei = true;
-									dir = next;
-									count++;
 								}
+								nei = true;
+								dir = next;
+								count++;
 							}
 						}						
 					}
@@ -745,8 +752,8 @@ public class Axiom implements BoardGame{
 
     public static void main(String args[]) {
 		Axiom g = new Axiom();
-		Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.ABPRUNE, 3);
-		Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.ABPRUNE, 3);
+		Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 4);
+		Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 4);
 		g.firstPlayer(p1);
 		g.secondPlayer(p2);
 		Host.hostGame(g, p1, p2, true);
