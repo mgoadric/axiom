@@ -113,7 +113,7 @@ public class Cube {
             }
         }
         // should NEVER happen
-        System.err.println("UHOH!!!");
+        System.err.println("UHOH!!! MISSING A DOME!!!");
         System.err.println(getName());
         System.exit(-1);
         return NONE;
@@ -193,10 +193,8 @@ public class Cube {
         if (isOccupied()) {
             return false;
         }
-        String above = "" + location[X] + "," + 
-                            location[Y] + "," + 
-                            (location[Z] + 1);
-        if (board.get(above) == null) {
+        Cube above = getNeighbor(ZUP);
+        if (above == null) {
             return true;
         }
         return false;
@@ -247,45 +245,35 @@ public class Cube {
 				String neighbor = null;
 				String support = null;
     			if (i == XUP) {
+    				// TODO Fix with getNeighbor(x, y, z)
     			    support = "" + (location[X] + 1) + "," + 
     				 	    	    location[Y] + "," +
     						       (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
-    			        neighbor = "" + (location[X] + 1) + "," + 
-    					    			 location[Y] + "," +
-    						     	     location[Z];
+    			        neighbor = getNeighborString(i, 1);
     				}
     			} else if (i == YUP) {
     			    support = "" + location[X] + "," + 
     					    		(location[Y] + 1) + "," +
     						       (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
-    			 	    neighbor = "" + location[X] + "," + 
-    						    	   (location[Y] + 1) + "," +
-    						 	        location[Z];  
+    			 	    neighbor = getNeighborString(i, 1);  
     				}
     			} else if (i == ZUP) {
-    			 	    neighbor = "" + location[X] + "," + 
-    					    			location[Y] + "," +
-    						     	   (location[Z] + 1);    		
-    						  
+    			 	neighbor = getNeighborString(i, 1);    						  
     			} else if (i == XDOWN) {
     			    support = "" + (location[X] - 1) + "," + 
     					    		location[Y] + "," +
     						       (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
-    			 	    neighbor = "" + (location[X] - 1) + "," + 
-    					    			 location[Y] + "," +
-    						     	     location[Z];
+    			 	    neighbor = getNeighborString(i, 1);
     		        }
     			} else if (i == YDOWN) {
     			    support = "" + location[X] + "," + 
     					          (location[Y] - 1) + "," +
     						      (location[Z] - 1);
     			    if (location[Z] == 1 || board.get(support) != null) {
-    			 	    neighbor = "" + location[X] + "," + 
-    					    		   (location[Y] - 1) + "," +
-    						     	    location[Z];    			    			
+    			 	    neighbor = getNeighborString(i, 1);    			    			
     			    }
     			}
     			if (neighbor != null && board.get(neighbor) == null) {
@@ -297,8 +285,10 @@ public class Cube {
     }
 
     public boolean legal() {
-    	// if you are not at Z level 1, you need support.
+
     	boolean locked = false;
+
+    	// if you are not at Z level 1, you need support and locking in the z direction.
     	if (location[Z] > 1) {
     		String support = getNeighborString(ZDOWN, 1);
     		if (!board.containsKey(support)) {
@@ -313,12 +303,12 @@ public class Cube {
     		}
     	}
     
-        // do you have a locked dome and no conflicts DOME - DOME? *Denotes legal positioning*
-        
+        // Cannot have domes against the table.
         if (location[Z] == 1 && (firstDome() == ZDOWN || secondDome() == ZDOWN)) {
         	return false;
         }
 
+        // do you have a locked dome and no conflicts DOME - DOME? *Denotes legal positioning*
         for (int i = 0; i < faces.length; i++) {
             String neighbor = getNeighborString(i, 1);
 			if (board.containsKey(neighbor)) {
