@@ -24,7 +24,7 @@ public class Cube {
     public static final int ZDOWN = 5;
     public static final int NONE = -1;
 	public static final String[] fnames = {"x+", "x-", "y+", "y-", "z+", "z-"};
-	public static final int[] opposite ={XDOWN, XUP, YDOWN, YUP, ZDOWN, ZUP};
+	public static final int[] opposite = {XDOWN, XUP, YDOWN, YUP, ZDOWN, ZUP};
 
     // Data members
     private int[] location;

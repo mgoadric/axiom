@@ -462,9 +462,6 @@ public class Axiom implements BoardGame{
 					}
 				}
 				
-				// TODO MHG 12/1/2011 cannot have two sceptres crossing
-				// TODO MHG 12/1/2011 cannot have a sceptre hit a cube on the opposite side
-
 				// CLOCKWISE and COUNTERCLOCKWISE
 				int[][] cmap = {{Cube.XUP, Cube.YUP, Cube.XDOWN, Cube.YDOWN},
 								{Cube.XUP, Cube.YDOWN, Cube.XDOWN, Cube.YUP}};
