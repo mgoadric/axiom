@@ -18,7 +18,7 @@ public class Axiom implements BoardGame{
     public Axiom() {
         // Initial Game-state
         board = new HashMap<String, Cube>();        
-        
+
         Cube b1 = new Cube(-1,0,2, Cube.XUP, Cube.NONE, Cube.BLACK);
         b1.addSceptre(Cube.ZUP, Cube.BLACK);
         b1.setBoard(board); // link board to cube
@@ -59,7 +59,8 @@ public class Axiom implements BoardGame{
         board.put(w5.getName(), w5);
         Cube w6 = new Cube(-1,1,1, Cube.ZUP, Cube.XUP, Cube.WHITE);
         w6.setBoard(board);
-        board.put(w6.getName(), w6);       
+        board.put(w6.getName(), w6);     
+
     }
     
     public Axiom(HashMap<String, Cube> board) {
@@ -227,7 +228,7 @@ public class Axiom implements BoardGame{
 					} else {
 						for (int i = 0; i < 5; i++) {
 							for (int j = ((i + 1) % 2) + i + 1; j < 6; j++) {
-								// MHG 11/5/2011 FIX 
+								// MHG 11/5/2011 FIXED
 								// cannot be opposite faces on dome, must be adjacent
 								Cube t = new Cube(s, i, j, c.getColor());
 								t.setBoard(board);
@@ -257,6 +258,7 @@ public class Axiom implements BoardGame{
 				
 				// DIAGONAL in same plane 
 				// TODO MHG 12/1/2011 need to add case where offdiag cubes block the path.
+				// Only in the ZUP direction, otherwise it would have no support...
 				int[] zeros = {0, 0, 0, 0};
 				int[] ones = {1, 1, 1, 1};
 				int[] negones = {-1, -1, -1, -1};
@@ -269,13 +271,15 @@ public class Axiom implements BoardGame{
 				int[] ymod2 = null;
 				int[] zmod2 = null;
 				
-				if (face == Cube.ZUP || face == Cube.ZDOWN) {
+				if (face == Cube.ZDOWN) {
+					System.out.println("WHY IS THE SCEPTRE UPSIDE DOWN in ZDOWN???");
+					System.exit(-1);
+				}
+					
+				if (face == Cube.ZUP) {
 					
 					zmod = zeros;
 					zmod2 = ones;
-					if (face == Cube.ZDOWN) {
-						zmod2 = negones;
-					}
 					
 					xmod = xmod2 = alttop;
 					ymod = ymod2 = altbottom;
@@ -312,15 +316,16 @@ public class Axiom implements BoardGame{
 					// while cubes in direction, keep making moves
 					while (nei) {
 						nei = false;
-						String neighbor = "" + (cur.getX() + xmod[i]) + "," + 
-											   (cur.getY() + ymod[i]) + "," +
-											   (cur.getZ() + zmod[i]);
-						Cube who = board.get(neighbor);
+						Cube who = cur.getNeighbor(xmod[i], ymod[i], zmod[i]);
 						if (who != null && who.getFace(face) == Cube.EMPTY) {
-							String neighbor2 = "" + (cur.getX() + xmod2[i]) + "," + 
-													(cur.getY() + ymod2[i]) + "," +
-													(cur.getZ() + zmod2[i]);
-							if (board.get(neighbor2) == null) { 
+							Cube who2 = cur.getNeighbor(xmod2[i], ymod2[i], zmod2[i]);
+							boolean barriers = false;
+							if (face == Cube.ZUP && 
+								cur.getNeighbor(xmod2[i] - xmod2[i], ymod2[i], zmod2[i]) != null &&
+								cur.getNeighbor(xmod2[i], ymod2[i] - ymod2[i], zmod2[i]) != null) {
+								barriers = true;
+							}
+							if (who2 == null && !barriers) {
 								if (!sceptlocs.contains(who.getNeighborString(face, 1)) && 
 								    !board.containsKey(who.getNeighborString(face, 2))) {
 									moves.add(0, "S(" + c.getName() + ") S(" + who.getName() + ")" +
