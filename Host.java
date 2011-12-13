@@ -6,6 +6,7 @@ import java.util.*;
 public class Host {
     
     public static int SLEEP = 500;
+    public static boolean VERBOSE = true;
     
     public static void graphicsBoard(String boardstate) {
         try {
@@ -18,14 +19,17 @@ public class Host {
     public static int hostGame(BoardGame game, Player player1, Player player2, boolean graphics) {
         Player currPlayer = player1; 
         Player waitPlayer = player2;
+        int avemoves = 0;
         int count = 0;
         if (graphics) {
             ShowBoard.setupUniverse();
         }
         while (!(game.gameOver())) {
             count++;
-            System.out.println("Current Board: Turn " + count);
-            System.out.println(game);
+            if (VERBOSE) {
+                System.out.println("Current Board: Turn " + count);
+                System.out.println(game);
+            }
 
             if (graphics) {
                 graphicsBoard(game.toString());
@@ -38,6 +42,7 @@ public class Host {
                 }
             }
             int move = currPlayer.chooseMove(game);
+            avemoves += game.legalMoves(currPlayer).size();
             while (!(game.legalMove(currPlayer, move))) {
                 System.out.println("" + move + " is not legal");
                 move = currPlayer.chooseMove(game);
@@ -52,19 +57,21 @@ public class Host {
         }
 
         // Someone just won the game! Tell us please!
-        System.out.println("Current Board: Final");
-        System.out.println(game);
+        if (VERBOSE) {
+            System.out.println("Current Board: Final");
+            System.out.println(game);
+        }
         if (graphics) {
             graphicsBoard(game.toString());
         }
         if (game.hasWon(currPlayer.getNum())) {
-            System.out.println("Player " + currPlayer + " wins!");
+            System.out.println("Player " + currPlayer + " wins! avemoves = " + (avemoves / count));
             return currPlayer.getNum();
         } else if (game.hasWon(waitPlayer.getNum())) {
-            System.out.println("Player " + waitPlayer + " wins!");
+            System.out.println("Player " + waitPlayer + " wins! avemoves = " + (avemoves / count));
             return waitPlayer.getNum();
         } else {
-            System.out.println("Tie Game");
+            System.out.println("Tie Game avemoves = " + (avemoves / count));
             return 2;
         }
     }

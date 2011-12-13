@@ -50,7 +50,7 @@ public class Cube {
     }
     
     public Cube (String loc, int d1, int d2, int color) {
-    	int first = loc.indexOf(",");
+    	int first = loc.indexOf(',');
     	int second = loc.indexOf(",", first + 1);
         location = new int[3];
 		location[X] = Integer.parseInt(loc.substring(0, first));

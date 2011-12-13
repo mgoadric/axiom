@@ -108,7 +108,7 @@ public class Axiom implements BoardGame{
 		// or, it is not your turn and the current player has no moves
 		if (color != players[turn].getNum()) {
 			movesCheck(players[turn]);
-			if (moves.size() == 0) {
+			if (moves.isEmpty()) {
 				return true;
 			}
 		}
@@ -128,7 +128,7 @@ public class Axiom implements BoardGame{
     
     	// or the current player has no moves.
     	movesCheck(players[turn]);
-    	if (moves.size() == 0) {
+    	if (moves.isEmpty()) {
     		return true;
     	}
     
@@ -740,8 +740,8 @@ public class Axiom implements BoardGame{
 	    int[] wins = new int[3];
     	for (int i = 0; i < 1000; i++) {
 			Axiom g = new Axiom();
-			Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.RANDOM, 4);
-			Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.RANDOM, 4);
+			Player p1 = new RandomPlayer(Cube.BLACK, Cube.WHITE);
+			Player p2 = new RandomPlayer(Cube.WHITE, Cube.BLACK);
 			g.firstPlayer(p1);
 			g.secondPlayer(p2);
 			int who = Host.hostGame(g, p1, p2, false);
@@ -752,8 +752,8 @@ public class Axiom implements BoardGame{
 
     public static void main(String args[]) {
 		Axiom g = new Axiom();
-		Player p1 = new Player(Cube.BLACK, Cube.WHITE, Player.HUMAN, 5);
-		Player p2 = new Player(Cube.WHITE, Cube.BLACK, Player.HUMAN, 5);
+		Player p1 = new RandomPlayer(Cube.BLACK, Cube.WHITE);
+		Player p2 = new AlphaBetaPlayer(Cube.WHITE, Cube.BLACK, 4);
 		g.firstPlayer(p1);
 		g.secondPlayer(p2);
 		Host.hostGame(g, p1, p2, true);
