@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 /**
  * Hosts a game between two players
@@ -17,62 +18,82 @@ public class Host {
     }
     
     public static int hostGame(BoardGame game, Player player1, Player player2, boolean graphics) {
-        Player currPlayer = player1; 
-        Player waitPlayer = player2;
-        int avemoves = 0;
-        int count = 0;
-        if (graphics) {
-            ShowBoard.setupUniverse();
-        }
-        while (!(game.gameOver())) {
-            count++;
-            if (VERBOSE) {
-                System.out.println("Current Board: Turn " + count);
-                System.out.println(game);
-            }
-
+        int winner = 0;
+        try {
+            Player currPlayer = player1; 
+            Player waitPlayer = player2;
+            PrintWriter out = new PrintWriter(new FileWriter("sessions/" + System.currentTimeMillis() + ".txt"));
+            out.println("" + player1 + " vs " + player2);
+            int avemoves = 0;
+            int count = 0;
             if (graphics) {
-                graphicsBoard(game.toString());
-                if (count == 1) {
-                    try {
-                        Thread.sleep(4000);
-                        new ShowBoard(new Scanner(game.toString()));
-                    } catch (InterruptedException ie) {
-                    } 
+                ShowBoard.setupUniverse();
+            }
+            while (!(game.gameOver())) {
+                count++;
+                if (VERBOSE) {
+                    System.out.println("Current Board: Turn " + count);
+                    System.out.println(game);
+                }
+    
+                if (graphics) {
+                    graphicsBoard(game.toString());
+                    if (count == 1) {
+                        try {
+                            Thread.sleep(4000);
+                            new ShowBoard(new Scanner(game.toString()));
+                        } catch (InterruptedException ie) {
+                        } 
+                    }
+                }
+                if (VERBOSE) {
+                    System.out.println(game.showMoves(currPlayer));
+                }
+                int move = currPlayer.chooseMove(game);
+                avemoves += game.legalMoves(currPlayer).size();
+                while (!(game.legalMove(currPlayer, move))) {
+                    System.out.println("" + move + " is not legal");
+                    move = currPlayer.chooseMove(game);
+                }
+                if (VERBOSE) {
+                    System.out.println("" + currPlayer.getNum() + ": Making move " + move + " " + game.showMove(move));
+                    out.println("" + currPlayer.getNum() + ": Making move " + move + " " + game.showMove(move));
+                }
+                game.makeMove(currPlayer, move);
+                Player temp = currPlayer;
+                currPlayer = waitPlayer;
+                waitPlayer = temp;
+                if (count > 1000) {
+                    break;
                 }
             }
-            int move = currPlayer.chooseMove(game);
-            avemoves += game.legalMoves(currPlayer).size();
-            while (!(game.legalMove(currPlayer, move))) {
-                System.out.println("" + move + " is not legal");
-                move = currPlayer.chooseMove(game);
+    
+            // Someone just won the game! Tell us please!
+            if (VERBOSE) {
+                System.out.println("Current Board: Final");
+                out.println("Current Board: Final");
+                System.out.println(game);
+                out.println(game);
             }
-            game.makeMove(currPlayer, move);
-            Player temp = currPlayer;
-            currPlayer = waitPlayer;
-            waitPlayer = temp;
-            if (count > 1000) {
-                break;
+            if (graphics) {
+                graphicsBoard(game.toString());
             }
+            if (game.hasWon(currPlayer.getNum())) {
+                winner = currPlayer.getNum();
+            } else if (game.hasWon(waitPlayer.getNum())) {
+                winner = waitPlayer.getNum();
+            } else {
+                System.out.println("Tie Game avemoves = " + (avemoves / count));
+                winner = 2;
+            }
+            System.out.println("Player " + winner + " wins! avemoves = " + (avemoves / count));
+            out.println("Player " + winner + " wins! avemoves = " + (avemoves / count));
+            out.close();
+        } catch (IOException ioe) {
+            System.out.println("Something went wrong with the file output");
+            ioe.printStackTrace();
         }
+        return winner;
 
-        // Someone just won the game! Tell us please!
-        if (VERBOSE) {
-            System.out.println("Current Board: Final");
-            System.out.println(game);
-        }
-        if (graphics) {
-            graphicsBoard(game.toString());
-        }
-        if (game.hasWon(currPlayer.getNum())) {
-            System.out.println("Player " + currPlayer + " wins! avemoves = " + (avemoves / count));
-            return currPlayer.getNum();
-        } else if (game.hasWon(waitPlayer.getNum())) {
-            System.out.println("Player " + waitPlayer + " wins! avemoves = " + (avemoves / count));
-            return waitPlayer.getNum();
-        } else {
-            System.out.println("Tie Game avemoves = " + (avemoves / count));
-            return 2;
-        }
     }
 }

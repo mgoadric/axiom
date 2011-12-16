@@ -23,16 +23,13 @@ abstract public class Player {
 
     // Methods
     public String toString() {
-        return "" + this.num;
+        return "" + this.num + ":" + this.getClass().getName();
     }    
     
     public int getNum() {
         return num;
     }
     
-    // The default player defines a very simple score function
-    // You will write the score function in the MancalaPlayer below
-    // to improve on this function.
     public int score(BoardGame board) {
         // Returns the score for this player given the state of the board
         Axiom b = (Axiom)board;

@@ -100,13 +100,7 @@ public class MiniMaxPlayer extends Player {
     public int chooseMove(BoardGame board) {
         // Returns the next move that this player wants to make
         int move = -1;
-        if (Host.VERBOSE) {
-	        System.out.println(board.showMoves(this));
-	    }
         move = minimaxMove( board, ply );
-        if (Host.VERBOSE) {
-	        System.out.println("" + num + ": Making move " + move + " " + board.showMove(move));
-	    }
         return move;
     }
 } 

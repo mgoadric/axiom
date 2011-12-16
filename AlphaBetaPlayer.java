@@ -33,7 +33,9 @@ public class AlphaBetaPlayer extends Player {
             if (s[1] == -1) {
             	s[0] *= 100;
             }
-            System.out.println("Move " + m + " score " + s[0] + " reply " + s[1]);
+            if (Host.VERBOSE) {
+                System.out.println("Move " + m + " score " + s[0] + " reply " + s[1]);
+            }
             if (s[0] > score) {
                 move = m;
                 score = s[0];
@@ -113,13 +115,7 @@ public class AlphaBetaPlayer extends Player {
     public int chooseMove(BoardGame board) {
         // Returns the next move that this player wants to make
         int move = -1;
-        if (Host.VERBOSE) {
-	        System.out.println(board.showMoves(this));
-	    }
         move = alphaBetaMove( board, ply);
-        if (Host.VERBOSE) {
-	        System.out.println("" + num + ": Making move " + move + " " + board.showMove(move));
-	    }
         return move;
     }
 } 

@@ -752,7 +752,7 @@ public class Axiom implements BoardGame{
 
     public static void main(String args[]) {
 		Axiom g = new Axiom();
-		Player p1 = new RandomPlayer(Cube.BLACK, Cube.WHITE);
+		Player p1 = new HumanPlayer(Cube.BLACK, Cube.WHITE);
 		Player p2 = new AlphaBetaPlayer(Cube.WHITE, Cube.BLACK, 4);
 		g.firstPlayer(p1);
 		g.secondPlayer(p2);
