@@ -23,7 +23,7 @@ public class Host {
             Player currPlayer = player1; 
             Player waitPlayer = player2;
             PrintWriter out = new PrintWriter(new FileWriter("sessions/" + System.currentTimeMillis() + ".txt"));
-            out.println("" + player1 + " vs " + player2);
+            out.println("" + player1 + " vs " + player2 + "\n");
             int avemoves = 0;
             int count = 0;
             if (graphics) {
@@ -34,6 +34,7 @@ public class Host {
                 if (VERBOSE) {
                     System.out.println("Current Board: Turn " + count);
                     System.out.println(game);
+                    out.print("" + count + "| ");
                 }
     
                 if (graphics) {
@@ -56,8 +57,9 @@ public class Host {
                     move = currPlayer.chooseMove(game);
                 }
                 if (VERBOSE) {
-                    System.out.println("" + currPlayer.getNum() + ": Making move " + move + " " + game.showMove(move));
-                    out.println("" + currPlayer.getNum() + ": Making move " + move + " " + game.showMove(move));
+                    System.out.println("" + currPlayer.num + ": Making move " + move + " " + game.showMove(move));
+                    out.println("" + currPlayer.num + ": Making move " + move + " " + game.showMove(move));
+                    out.flush();
                 }
                 game.makeMove(currPlayer, move);
                 Player temp = currPlayer;
@@ -71,17 +73,17 @@ public class Host {
             // Someone just won the game! Tell us please!
             if (VERBOSE) {
                 System.out.println("Current Board: Final");
-                out.println("Current Board: Final");
+                out.println("\nFinal Board");
                 System.out.println(game);
                 out.println(game);
             }
             if (graphics) {
                 graphicsBoard(game.toString());
             }
-            if (game.hasWon(currPlayer.getNum())) {
-                winner = currPlayer.getNum();
-            } else if (game.hasWon(waitPlayer.getNum())) {
-                winner = waitPlayer.getNum();
+            if (game.hasWon(currPlayer.num)) {
+                winner = currPlayer.num;
+            } else if (game.hasWon(waitPlayer.num)) {
+                winner = waitPlayer.num;
             } else {
                 System.out.println("Tie Game avemoves = " + (avemoves / count));
                 winner = 2;

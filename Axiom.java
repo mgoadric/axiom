@@ -98,7 +98,7 @@ public class Axiom implements BoardGame{
     	// or if there are two of the same on the same cube and it is your turn
     	for (String k : board.keySet()) {
     		Cube c = board.get(k);
-    		if (c.twoSceptreDifferentColor() && color != players[turn].getNum()) {
+    		if (c.twoSceptreDifferentColor() && color != players[turn].num) {
     			return true;
     		}
     		if (c.twoSceptreSameColor() && color != c.getFace(c.firstSceptre())) {
@@ -106,7 +106,7 @@ public class Axiom implements BoardGame{
     		}
     	}
 		// or, it is not your turn and the current player has no moves
-		if (color != players[turn].getNum()) {
+		if (color != players[turn].num) {
 			movesCheck(players[turn]);
 			if (moves.isEmpty()) {
 				return true;
@@ -140,7 +140,7 @@ public class Axiom implements BoardGame{
 		int count = 0;
 		for (String k : new HashSet<String>(board.keySet())) {
 			Cube c = board.get(k);
-			if (c.isFree() && c.getColor() == p) {
+			if (c.isFree() && c.color == p) {
 				count++;
 			}
 		}
@@ -152,7 +152,7 @@ public class Axiom implements BoardGame{
 		int count = 0;
 		for (String k : new HashSet<String>(board.keySet())) {
 			Cube c = board.get(k);
-			if (c.getColor() == p) {
+			if (c.color == p) {
 				count++;
 			}
 		}
@@ -179,11 +179,11 @@ public class Axiom implements BoardGame{
 
 		int count = 0;
 		for (String k : new HashSet<String>(board.keySet())) {
-
+			//System.out.println(k);
 			Cube c = board.get(k);
 			
 			// CUBE MOVES
-			if (c.isFree() && c.getColor() == p.getNum()) {
+			if (c.isFree() && c.color == p.num) {
 			
 				// find all locations where this cube can be placed
 				HashSet<String> spots = new HashSet<String>();
@@ -215,7 +215,7 @@ public class Axiom implements BoardGame{
 					//System.out.println(s);
 					if (c.secondDome() == Cube.NONE) {
 						for (int i = 0; i < 6; i++) {
-							Cube t = new Cube(s, i, -1, c.getColor());
+							Cube t = new Cube(s, i, -1, c.color);
 							t.setBoard(board);
 							board.put(s, t);
 							if (t.legal()) {
@@ -230,7 +230,7 @@ public class Axiom implements BoardGame{
 							for (int j = ((i + 1) % 2) + i + 1; j < 6; j++) {
 								// MHG 11/5/2011 FIXED
 								// cannot be opposite faces on dome, must be adjacent
-								Cube t = new Cube(s, i, j, c.getColor());
+								Cube t = new Cube(s, i, j, c.color);
 								t.setBoard(board);
 								board.put(s, t);
 								if (t.legal()) {
@@ -247,7 +247,7 @@ public class Axiom implements BoardGame{
 			}
 			
 			// SCEPTRE MOVES 
-			if (c.isOccupied() && c.getFace(c.firstSceptre()) == p.getNum()) {
+			if (c.isOccupied() && c.getFace(c.firstSceptre()) == p.num) {
 			
 				// Record sceptre location and remove from list
 				String whereami = c.getNeighborString(c.firstSceptre(), 1);
@@ -343,10 +343,10 @@ public class Axiom implements BoardGame{
 				// since there will never be overhangs, and we cannot go under the board
 				// we can handle the X and Y directions differently than the Z direction,
 				// where complete loops are possible
-				int[][] map = {{Cube.ZUP, Cube.XUP, Cube.XDOWN},
-							   {Cube.ZUP, Cube.XDOWN, Cube.XUP},
-							   {Cube.ZUP, Cube.YUP, Cube.YDOWN},
-							   {Cube.ZUP, Cube.YDOWN, Cube.YUP}};
+				int[][] map = {{Cube.XUP, Cube.XDOWN},
+							   {Cube.XDOWN, Cube.XUP},
+							   {Cube.YUP, Cube.YDOWN},
+							   {Cube.YDOWN, Cube.YUP}};
 				for (int i = 0; i < map.length; i++) {
 					Cube cur = c;
 					int dir = face;
@@ -354,27 +354,62 @@ public class Axiom implements BoardGame{
 					while (nei) {						
 						nei = false;
 						//System.out.println(cur);
+						if (dir == Cube.ZUP) {
+							Cube a = null;
+							Cube b = null;
+							a = cur.getNeighbor(map[i][0]);
+							if (a != null) {
+								b = a.getNeighbor(Cube.ZUP);
+							}
+							// check three placements
+							if (a == null) {
+								if (cur.isEmpty(map[i][0])) { 
+									if (!sceptlocs.contains(cur.getNeighborString(map[i][0], 1)) && 
+								    	!board.containsKey(cur.getNeighborString(map[i][0], 2))) {
+										moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
+													 Cube.fnames[map[i][0]] + " ");
+									}
+									nei = true;
+									dir = map[i][0];
+									count++;
+								}
+							} else if (b == null) {
+								if (a.isEmpty(Cube.ZUP)) { 
+									if (!sceptlocs.contains(a.getNeighborString(Cube.ZUP, 1)) && 
+								    	!board.containsKey(a.getNeighborString(Cube.ZUP, 2))) {
+										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
+													 Cube.fnames[Cube.ZUP] + " ");
+									}
+									nei = true;
+									dir = Cube.ZUP;
+									cur = a;
+									count++;
+								}						
+							} else {
+								if (b.isEmpty(map[i][1])) {
+									if (!sceptlocs.contains(b.getNeighborString(map[i][1], 1)) && 
+								    	!board.containsKey(b.getNeighborString(map[i][1], 2))) {
+										moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")" + 
+													 Cube.fnames[map[i][1]] + " ");
+									}
+									nei = true;
+									dir = map[i][1];
+									cur = b;
+									count++;
+								}						
+							}
+						}
 						if (dir == map[i][0]) {
 							Cube a = null;
 							Cube b = null;
-							a = cur.getNeighbor(map[i][1]);
+							a = cur.getNeighbor(Cube.ZDOWN);
 							if (a != null) {
 								b = a.getNeighbor(map[i][0]);
 							}
 							// check three placements
 							if (a == null) {
-								if (cur.isEmpty(map[i][1])) { 
-									if (!sceptlocs.contains(cur.getNeighborString(map[i][1], 1)) && 
-								    	!board.containsKey(cur.getNeighborString(map[i][1], 2))) {
-										moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
-													 Cube.fnames[map[i][1]] + " ");
-									}
-									nei = true;
-									dir = map[i][1];
-									count++;
-								}
 							} else if (b == null) {
-								if (a.isEmpty(map[i][0])) { 
+								if (a.isEmpty(map[i][0])) {
 									if (!sceptlocs.contains(a.getNeighborString(map[i][0], 1)) && 
 								    	!board.containsKey(a.getNeighborString(map[i][0], 2))) {
 										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
@@ -386,30 +421,35 @@ public class Axiom implements BoardGame{
 									count++;
 								}						
 							} else {
-								if (b.isEmpty(map[i][2])) {
-									if (!sceptlocs.contains(b.getNeighborString(map[i][2], 1)) && 
-								    	!board.containsKey(b.getNeighborString(map[i][2], 2))) {
+								if (b.isEmpty(Cube.ZUP)) { 
+									if (!sceptlocs.contains(b.getNeighborString(Cube.ZUP, 1)) && 
+								    	!board.containsKey(b.getNeighborString(Cube.ZUP, 2))) {
 										moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")" + 
-													 Cube.fnames[map[i][2]] + " ");
+													 Cube.fnames[Cube.ZUP] + " ");
 									}
 									nei = true;
-									dir = map[i][2];
+									dir = Cube.ZUP;
 									cur = b;
 									count++;
 								}						
 							}
 						}
 						if (dir == map[i][1]) {
-							Cube a = null;
-							Cube b = null;
-							a = cur.getNeighbor(Cube.ZDOWN);
-							if (a != null) {
-								b = a.getNeighbor(map[i][1]);
-							}
-							// check three placements
+							Cube a = cur.getNeighbor(Cube.ZUP);
+							// check two placements
 							if (a == null) {
-							} else if (b == null) {
-								if (a.isEmpty(map[i][1])) {
+								if (cur.isEmpty(Cube.ZUP)) {
+									if (!sceptlocs.contains(cur.getNeighborString(Cube.ZUP, 1)) && 
+								    	!board.containsKey(cur.getNeighborString(Cube.ZUP, 2))) {
+										moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
+													 Cube.fnames[Cube.ZUP] + " ");
+									}
+									nei = true;
+									dir = Cube.ZUP;
+									count++;
+								}
+							} else {
+								if (a.isEmpty(map[i][1])) { 
 									if (!sceptlocs.contains(a.getNeighborString(map[i][1], 1)) && 
 								    	!board.containsKey(a.getNeighborString(map[i][1], 2))) {
 										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
@@ -417,46 +457,6 @@ public class Axiom implements BoardGame{
 									}
 									nei = true;
 									dir = map[i][1];
-									cur = a;
-									count++;
-								}						
-							} else {
-								if (b.isEmpty(map[i][0])) { 
-									if (!sceptlocs.contains(b.getNeighborString(map[i][0], 1)) && 
-								    	!board.containsKey(b.getNeighborString(map[i][0], 2))) {
-										moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")" + 
-													 Cube.fnames[map[i][0]] + " ");
-									}
-									nei = true;
-									dir = map[i][0];
-									cur = b;
-									count++;
-								}						
-							}
-						}
-						if (dir == map[i][2]) {
-							Cube a = cur.getNeighbor(map[i][0]);
-							// check two placements
-							if (a == null) {
-								if (cur.isEmpty(map[i][0])) {
-									if (!sceptlocs.contains(cur.getNeighborString(map[i][0], 1)) && 
-								    	!board.containsKey(cur.getNeighborString(map[i][0], 2))) {
-										moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
-													 Cube.fnames[map[i][0]] + " ");
-									}
-									nei = true;
-									dir = map[i][0];
-									count++;
-								}
-							} else {
-								if (a.isEmpty(map[i][2])) { 
-									if (!sceptlocs.contains(a.getNeighborString(map[i][2], 1)) && 
-								    	!board.containsKey(a.getNeighborString(map[i][2], 2))) {
-										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
-													 Cube.fnames[map[i][2]] + " ");
-									}
-									nei = true;
-									dir = map[i][2];
 									cur = a;
 									count++;
 								}						
@@ -574,7 +574,7 @@ public class Axiom implements BoardGame{
         // if Cube move
         if (choice.charAt(0) == 'C') {
             // remove from board
-            int clr = board.get(actualcube).getColor();
+            int clr = board.get(actualcube).color;
             board.remove(actualcube);
 
             // add new cube to board
@@ -628,7 +628,7 @@ public class Axiom implements BoardGame{
         
         if (choice.charAt(0) == 'S') {
             
-            int clr = board.get(choice.substring(2, choice.indexOf(')'))).getColor();
+            int clr = board.get(actualcube).color;
         	int DM1 = -1;
             // remove from current location
             if (dm1.equals("x+")) {
@@ -663,7 +663,8 @@ public class Axiom implements BoardGame{
             
             // if sceptre currently encroaching and leaving that cube, 
             // make cube disappear
-            if (sclr != clr && was.isFree()) {
+            // MHG 12/18/2011 Must be returning to the player's color, not just leaving free cube!
+            if (sclr != clr && c2.color == sclr && was.isFree()) {
             	board.remove(actualcube);
             }            
         }
@@ -753,7 +754,9 @@ public class Axiom implements BoardGame{
     public static void main(String args[]) {
 		Axiom g = new Axiom();
 		Player p1 = new HumanPlayer(Cube.BLACK, Cube.WHITE);
+		//Player p1 = new AlphaBetaPlayer(Cube.BLACK, Cube.WHITE, 4);
 		Player p2 = new AlphaBetaPlayer(Cube.WHITE, Cube.BLACK, 4);
+		//Player p2 = new HumanPlayer(Cube.WHITE, Cube.BLACK);
 		g.firstPlayer(p1);
 		g.secondPlayer(p2);
 		Host.hostGame(g, p1, p2, true);

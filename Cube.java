@@ -29,7 +29,7 @@ public class Cube {
     // Data members
     private int[] location;
     private int[] faces;
-    private int color;
+    public final int color;
     private HashMap<String, Cube> board;
     
     // Constructor
@@ -81,11 +81,7 @@ public class Cube {
     public String getName() {
         return "" + getX() + "," + getY() + "," + getZ();
     }
-    
-    public int getColor() {
-    	return color;
-    }
-    
+        
     public int getX() {
         return location[X];
     }
@@ -201,20 +197,7 @@ public class Cube {
     }
     
     public Cube getNeighbor(int f) {
-    	if (f == ZUP) {
-    		return board.get("" + getX() + "," + getY() + "," + (getZ() + 1));
-    	} else if (f == ZDOWN) {
-    		return board.get("" + getX() + "," + getY() + "," + (getZ() - 1));    	
-    	} else if (f == YUP) {
-    		return board.get("" + getX() + "," + (getY() + 1) + "," + getZ());    	
-    	} else if (f == YDOWN) {
-    		return board.get("" + getX() + "," + (getY() - 1) + "," + getZ());    	
-    	} else if (f == XUP) {
-    		return board.get("" + (getX() + 1) + "," + getY() + "," + getZ());    	
-    	} else if (f == XDOWN) {
-    		return board.get("" + (getX() - 1)+ "," + getY() + "," + getZ());    	
-    	}
-    	return null;
+    	return board.get(getNeighborString(f, 1));
     }
 
     public String getNeighborString(int f, int d) {
@@ -365,7 +348,7 @@ public class Cube {
 
     // Use the notation from the play by email paper
     public String toString() {
-        String c = "C (" + getX() + "," + getY() + "," + getZ() + ")";
+        String c = "C (" + getName() + ")";
         c += fnames[firstDome()];
         if (secondDome() != NONE) {
         	c += " " + fnames[secondDome()];
@@ -383,7 +366,7 @@ public class Cube {
     public String toSceptreString() {
         String t = "";
         String y = "";
-        String s = "S (" + getX() + "," + getY() + "," + getZ() + ")";
+        String s = "S (" + getName() + ")";
         if (firstSceptre() != NONE) {
             t += s + fnames[firstSceptre()];
             if (getFace(firstSceptre()) == WHITE) {

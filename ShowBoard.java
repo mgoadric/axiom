@@ -219,7 +219,12 @@ public class ShowBoard {
     }
     //universe.getViewingPlatform().setNominalViewingTransform();
     g2.addChild(new Axis());
-
+//    Text3D t = new Text3D();
+//    t.setString("X");
+//    t.setPosition(new Point3f(6.0f, 0.0f, 0.51f));
+//    Shape3D s = new Shape3D();
+//    s.setGeometry(t);
+//    g2.addChild(s);
     // add the group of objects to the Universe
     universe.addBranchGraph(group);
 }

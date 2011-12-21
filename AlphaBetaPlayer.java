@@ -6,9 +6,12 @@ import java.util.*;
 
 public class AlphaBetaPlayer extends Player {
 
+    protected int ply;
+
     // Constructor    
     public AlphaBetaPlayer(int playerNum, int oppNum, int ply) {
-        super(playerNum, oppNum, ply);
+        super(playerNum, oppNum);
+        this.ply = ply;
     }
 
     public int alphaBetaMove(BoardGame board, int ply ) {

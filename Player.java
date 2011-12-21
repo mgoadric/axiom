@@ -1,5 +1,3 @@
-import java.util.*;
-
 /**
  * Translated from the original python written by Christine Alvorado
  */
@@ -7,28 +5,20 @@ import java.util.*;
 abstract public class Player {
 
     // Data Members
-    protected int num;
+    public final int num;
     protected int opp;
     protected int type;
-    protected int ply;
-    protected int nodes;
 
     // Constructor    
-    public Player(int playerNum, int oppNum, int ply) {
+    public Player(int playerNum, int oppNum) {
         this.num = playerNum;
         this.opp = oppNum;
-        this.ply = ply;
-        this.nodes = 0;
     }
 
     // Methods
     public String toString() {
         return "" + this.num + ":" + this.getClass().getName();
     }    
-    
-    public int getNum() {
-        return num;
-    }
     
     public int score(BoardGame board) {
         // Returns the score for this player given the state of the board

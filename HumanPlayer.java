@@ -10,7 +10,7 @@ public class HumanPlayer extends Player {
 
     // Constructor    
     public HumanPlayer(int playerNum, int oppNum) {
-        super(playerNum, oppNum, 0);
+        super(playerNum, oppNum);
     }
 
     public int chooseMove(BoardGame board) {

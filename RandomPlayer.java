@@ -8,7 +8,7 @@ public class RandomPlayer extends Player {
 
     // Constructor    
     public RandomPlayer(int playerNum, int oppNum) {
-        super(playerNum, oppNum, 0);
+        super(playerNum, oppNum);
     }
 
     public int chooseMove(BoardGame board) {
