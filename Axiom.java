@@ -755,6 +755,7 @@ public class Axiom implements BoardGame{
 		Axiom g = new Axiom();
 		Player p1 = new HumanPlayer(Cube.BLACK, Cube.WHITE);
 		//Player p1 = new AlphaBetaPlayer(Cube.BLACK, Cube.WHITE, 4);
+		//Player p1 = new MonteCarloPlayer(Cube.BLACK, Cube.WHITE, 10000, new MonteCarloTree(0, 0));
 		Player p2 = new AlphaBetaPlayer(Cube.WHITE, Cube.BLACK, 4);
 		//Player p2 = new HumanPlayer(Cube.WHITE, Cube.BLACK);
 		g.firstPlayer(p1);
