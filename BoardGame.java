@@ -23,5 +23,7 @@ public interface BoardGame {
 	public String showMove(int m);
 
     public BoardGame clone();
+    
+    public int getTurn();
 
 }

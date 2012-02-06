@@ -11,7 +11,7 @@ public class MonteCarloPlayer extends Player {
     public MonteCarloPlayer(int playerNum, int oppNum, int simnum) {
         super(playerNum, oppNum);
         this.simnum = simnum;
-        this.moveTree = new MonteCarloTree(0, 0, 10);
+        this.moveTree = new MonteCarloTree(10);
     }
     
     public int chooseMove(BoardGame board) {
@@ -22,8 +22,10 @@ public class MonteCarloPlayer extends Player {
     }
     
     public int monteCarloMove(BoardGame board){
+    		moveTree.createRoot();
     		for(int i =0; i < simnum; i++){
-    				moveTree.findMove(board);
+    				moveTree.findMove(board, this);
+    				System.out.print(".");
     		}
     		return moveTree.getBestMove();
     }
