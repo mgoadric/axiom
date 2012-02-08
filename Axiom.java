@@ -172,12 +172,14 @@ public class Axiom implements BoardGame{
 		// evaluate each cube
 		HashSet<String> sceptlocs = new HashSet<String>();
 		HashSet<String> sceptcaplocs = new HashSet<String>();
+		HashSet<String> sceptdirs = new HashSet<String>();
 		for (Cube c : board.values()) {
 			
 			// MHG 11/5/2011 add all sceptre locs to set
 			if (c.firstSceptre() != Cube.NONE) {
 				sceptlocs.add(c.getNeighborString(c.firstSceptre(), 1));
 				sceptcaplocs.add(c.getNeighborString(c.firstSceptre(), 2));
+				sceptdirs.add(c.getNeighborString(c.firstSceptre(), 1) + "|" + c.firstSceptre());
 			}
 		}
 
@@ -331,7 +333,8 @@ public class Axiom implements BoardGame{
 							}
 							if (who2 == null && !barriers) {
 								if (!sceptlocs.contains(who.getNeighborString(face, 1)) && 
-								    !board.containsKey(who.getNeighborString(face, 2))) {
+								    !board.containsKey(who.getNeighborString(face, 2)) &&
+								    !sceptdirs.contains(who.getNeighborString(face, 2) + "|" + Cube.opposite[face])) {
 									moves.add(0, "S(" + c.getName() + ") S(" + who.getName() + ")" +
 												 Cube.fnames[face] + " ");
 								}
@@ -369,7 +372,8 @@ public class Axiom implements BoardGame{
 							if (a == null) {
 								if (cur.isEmpty(map[i][0])) { 
 									if (!sceptlocs.contains(cur.getNeighborString(map[i][0], 1)) && 
-								    	!board.containsKey(cur.getNeighborString(map[i][0], 2))) {
+								    	!board.containsKey(cur.getNeighborString(map[i][0], 2)) &&
+								    	!sceptdirs.contains(cur.getNeighborString(map[i][0], 2) + "|" + Cube.opposite[map[i][0]])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
 													 Cube.fnames[map[i][0]] + " ");
 									}
@@ -380,7 +384,8 @@ public class Axiom implements BoardGame{
 							} else if (b == null) {
 								if (a.isEmpty(Cube.ZUP)) { 
 									if (!sceptlocs.contains(a.getNeighborString(Cube.ZUP, 1)) && 
-								    	!board.containsKey(a.getNeighborString(Cube.ZUP, 2))) {
+								    	!board.containsKey(a.getNeighborString(Cube.ZUP, 2)) &&
+								    	!sceptdirs.contains(a.getNeighborString(Cube.ZUP, 2) + "|" + Cube.opposite[Cube.ZUP])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
 													 Cube.fnames[Cube.ZUP] + " ");
 									}
@@ -392,7 +397,8 @@ public class Axiom implements BoardGame{
 							} else {
 								if (b.isEmpty(map[i][1])) {
 									if (!sceptlocs.contains(b.getNeighborString(map[i][1], 1)) && 
-								    	!board.containsKey(b.getNeighborString(map[i][1], 2))) {
+								    	!board.containsKey(b.getNeighborString(map[i][1], 2)) &&
+								    	!sceptdirs.contains(b.getNeighborString(map[i][1], 2) + "|" + Cube.opposite[map[i][1]])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")" + 
 													 Cube.fnames[map[i][1]] + " ");
 									}
@@ -415,7 +421,8 @@ public class Axiom implements BoardGame{
 							} else if (b == null) {
 								if (a.isEmpty(map[i][0])) {
 									if (!sceptlocs.contains(a.getNeighborString(map[i][0], 1)) && 
-								    	!board.containsKey(a.getNeighborString(map[i][0], 2))) {
+								    	!board.containsKey(a.getNeighborString(map[i][0], 2)) &&
+								    	!sceptdirs.contains(a.getNeighborString(map[i][0], 2) + "|" + Cube.opposite[map[i][0]])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
 													 Cube.fnames[map[i][0]] + " ");
 									}
@@ -427,7 +434,8 @@ public class Axiom implements BoardGame{
 							} else {
 								if (b.isEmpty(Cube.ZUP)) { 
 									if (!sceptlocs.contains(b.getNeighborString(Cube.ZUP, 1)) && 
-								    	!board.containsKey(b.getNeighborString(Cube.ZUP, 2))) {
+								    	!board.containsKey(b.getNeighborString(Cube.ZUP, 2)) &&
+								    	!sceptdirs.contains(b.getNeighborString(Cube.ZUP, 2) + "|" + Cube.opposite[Cube.ZUP])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + b.getName() + ")" + 
 													 Cube.fnames[Cube.ZUP] + " ");
 									}
@@ -444,7 +452,8 @@ public class Axiom implements BoardGame{
 							if (a == null) {
 								if (cur.isEmpty(Cube.ZUP)) {
 									if (!sceptlocs.contains(cur.getNeighborString(Cube.ZUP, 1)) && 
-								    	!board.containsKey(cur.getNeighborString(Cube.ZUP, 2))) {
+								    	!board.containsKey(cur.getNeighborString(Cube.ZUP, 2)) &&
+								    	!sceptdirs.contains(cur.getNeighborString(Cube.ZUP, 2) + "|" + Cube.opposite[Cube.ZUP])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + cur.getName() + ")" + 
 													 Cube.fnames[Cube.ZUP] + " ");
 									}
@@ -455,7 +464,8 @@ public class Axiom implements BoardGame{
 							} else {
 								if (a.isEmpty(map[i][1])) { 
 									if (!sceptlocs.contains(a.getNeighborString(map[i][1], 1)) && 
-								    	!board.containsKey(a.getNeighborString(map[i][1], 2))) {
+								    	!board.containsKey(a.getNeighborString(map[i][1], 2)) &&
+								    	!sceptdirs.contains(a.getNeighborString(map[i][1], 2) + "|" + Cube.opposite[map[i][1]])) {
 										moves.add(0, "S(" + c.getName() + ") S(" + a.getName() + ")" + 
 													 Cube.fnames[map[i][1]] + " ");
 									}
@@ -511,7 +521,8 @@ public class Axiom implements BoardGame{
 													 Cube.fnames[cmap[i][prev]] + " ";
 								if (!sceptlocs.contains(b.getNeighborString(cmap[i][prev], 1)) && 
 								    !board.containsKey(b.getNeighborString(cmap[i][prev], 2)) &&
-								    !moves.contains(m)) {
+								    !moves.contains(m) &&
+								    !sceptdirs.contains(b.getNeighborString(cmap[i][prev], 2) + "|" + Cube.opposite[cmap[i][prev]])) {
 									moves.add(0, m);
 								}
 								nei = true;
@@ -525,7 +536,8 @@ public class Axiom implements BoardGame{
 													 Cube.fnames[cmap[i][dir]] + " ";
 								if (!sceptlocs.contains(a.getNeighborString(cmap[i][dir], 1)) && 
 								    !board.containsKey(a.getNeighborString(cmap[i][dir], 2)) &&
-								    !moves.contains(m)) {
+								    !moves.contains(m) &&
+								    !sceptdirs.contains(a.getNeighborString(cmap[i][dir], 2) + "|" + Cube.opposite[cmap[i][dir]])) {
 									moves.add(0, m);
 								}
 								nei = true;
@@ -538,7 +550,8 @@ public class Axiom implements BoardGame{
 													 Cube.fnames[cmap[i][next]] + " ";
 								if (!sceptlocs.contains(cur.getNeighborString(cmap[i][next], 1)) && 
 								    !board.containsKey(cur.getNeighborString(cmap[i][next], 2)) &&
-								    !moves.contains(m)) {
+								    !moves.contains(m) &&
+								    !sceptdirs.contains(cur.getNeighborString(cmap[i][next], 2) + "|" + Cube.opposite[cmap[i][next]])) {
 									moves.add(0, m);
 								}
 								nei = true;
