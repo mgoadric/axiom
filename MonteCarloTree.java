@@ -41,7 +41,8 @@ public class MonteCarloTree {
 			//Make better method to choose node to explore
 			//Just trying to get it to select some move, not generating children if visited visitLimit yet.
 			Random random = new Random();
-			int move = random.nextInt(root.children.size());
+		//	int move = random.nextInt(root.children.size());
+			int move = selectNode();
 			root.children.get(move).visits+= 1;
 			BoardGame nextBoard = (BoardGame)board.clone();
 			nextBoard.makeMove(player, move);
@@ -59,11 +60,34 @@ public class MonteCarloTree {
 				ArrayList<Integer> t = nextBoard.legalMoves(pointer);
         int move2 = t.get((int)(Math.random() * t.size()));
         nextBoard.makeMove(pointer, move2);
-        count += 1;
+        count++;
 			}
 			if (nextBoard.hasWon(player.num)) {
 				root.children.get(move).wins+=1;
 			}
+		}
+		
+		public int selectNode(){
+			double bestFoundValue = 0;
+			int bestFoundMove = 0;
+			for(Node c : root.children){
+					double value;
+					if(c.visits > 10){
+						double winrate = ((double)c.wins / c.visits);
+						//figure out formula for choosing nodes. Using example for now.
+						value = winrate + (0.44 * Math.sqrt(Math.log(c.visits) / c.visits));
+					}
+					else{
+						value = 10000 + 1000*Math.random();	
+					}
+					if(value > bestFoundValue){
+						bestFoundValue = value;
+						bestFoundMove = root.children.indexOf(c);
+					}
+			}
+			//System.out.println("Move:" + bestFoundMove + " Value:" + bestFoundValue);
+			System.out.print(".");
+			return bestFoundMove;
 		}
 		
 		public void generateChildren(Node parent, BoardGame board, MonteCarloPlayer player) {
@@ -81,7 +105,7 @@ public class MonteCarloTree {
 				int winning_move = 0;
 				for (Node c : root.children){
 						System.out.println(c.wins);
-						if(c.wins > winner.wins){
+						if(c.visits > winner.visits){
 							winner = c;	
 							winning_move = root.children.indexOf(c);
 						}

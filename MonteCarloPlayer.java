@@ -25,7 +25,7 @@ public class MonteCarloPlayer extends Player {
     		moveTree.createRoot();
     		for(int i =0; i < simnum; i++){
     				moveTree.findMove(board, this);
-    				System.out.print(".");
+    			//	System.out.print(".");
     		}
     		return moveTree.getBestMove();
     }
