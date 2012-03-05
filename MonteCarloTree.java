@@ -24,8 +24,9 @@ public class MonteCarloTree {
 				
 				public void win_calc(Boolean win){
 						if((win && level % 2 != 0) || (!win && level % 2 != 1)){
-							wins += 1;
+							wins++;
 						}
+						visits++;
 						if(parent != null){
 							parent.win_calc(win);
 						}
@@ -34,8 +35,6 @@ public class MonteCarloTree {
 		
 		public MonteCarloTree(int visitLimit) {
 				this.visitLimit = visitLimit;
-			//	root = new Node();
-			//	root.children = new ArrayList<Node>();
 		}
 		
 		public void createRoot(){
@@ -44,13 +43,6 @@ public class MonteCarloTree {
 		}
 		
 		public void findMove(BoardGame board, MonteCarloPlayer player){
-			//1/30/12
-			//root node empty, generate children based on legalmoves. Need to bring in player. Will also need opponent player to play randomly against.
-			//Choose node, has no children, hasn't reached visitLimit, then random game using that move M.
-			//Make move M. For legal moves of Random Opponent, choose one. Generate legalmoves for Me at that move, etc.
-			//Update visits to node on game completion. When gameOver, update wins if won for that player.
-			//How to choose moves which are doing well? Can't continuously pick random moves to make, want to research moves doing well.
-			//On visitLimit reached, generate children for that move. 
 			if(root.children.size() == 0){
 					generateChildren(root, board, player);
 			}
@@ -58,7 +50,7 @@ public class MonteCarloTree {
 			int move = selectNode(root);
 			int new_move = 0;
 			Node current_node = root.children.get(move);
-			current_node.visits+= 1;
+		//	current_node.visits+= 1;
 			BoardGame nextBoard = (BoardGame)board.clone();
 			nextBoard.makeMove(player, move);
 			RandomPlayer opp = new RandomPlayer(player.opp, player.num);
@@ -79,7 +71,7 @@ public class MonteCarloTree {
 				if(current_node.children != null){
 						new_move = selectNode(current_node);
 						current_node = current_node.children.get(new_move);
-						current_node.visits += 1;
+					//	current_node.visits += 1;
 				}
 				else{
 					ArrayList<Integer> t = nextBoard.legalMoves(pointer);
@@ -98,20 +90,30 @@ public class MonteCarloTree {
 			int bestFoundMove = 0;
 			for(Node c : node.children){
 					double value;
-					if(c.visits > this.visitLimit){
+					boolean even_them = c.level % 2 != 1;
+					boolean odd_me = c.level % 2 != 0;
+					//System.out.print(even_them);
+					if(c.visits >= this.visitLimit){
 						double winrate = ((double)c.wins / c.visits);
-						//figure out formula for choosing nodes. Using example for now.
-						value = winrate + (0.44 * Math.sqrt(Math.log(node.visits) / c.visits));
+						value = winrate + (Math.sqrt(Math.log(node.visits) / (5*c.visits)));
+						//System.out.println(node.visits);
+					}
+					else if(c.visits < this.visitLimit && odd_me){
+						value = (10000 + 1000*Math.random());	
 					}
 					else{
-						value = 10000 + 1000*Math.random();	
+						value = -(10000 + 1000*Math.random());	
 					}
-					if(value > bestFoundValue){
+					if(value > bestFoundValue && odd_me){
+						bestFoundValue = value;
+						bestFoundMove = node.children.indexOf(c);
+					}
+					else if(value < bestFoundValue && even_them){
 						bestFoundValue = value;
 						bestFoundMove = node.children.indexOf(c);
 					}
 			}
-			//System.out.println("Move:" + bestFoundMove + " Value:" + bestFoundValue);
+		//	System.out.println("Move:" + bestFoundMove + " Value:" + bestFoundValue);
 			System.out.print(".");
 			return bestFoundMove;
 		}
