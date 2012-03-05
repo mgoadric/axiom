@@ -13,6 +13,23 @@ public class MonteCarloTree {
 				private int visits = 0;
 				private Node parent;
 				private List<Node> children;
+				private int level = 0;
+				
+				public Node(Node parent){
+						this.parent = parent;
+						if(parent != null){
+								this.level = parent.level+1;
+						}
+				}
+				
+				public void win_calc(Boolean win){
+						if((win && level % 2 != 0) || (!win && level % 2 != 1)){
+							wins += 1;
+						}
+						if(parent != null){
+							parent.win_calc(win);
+						}
+				}
 		}
 		
 		public MonteCarloTree(int visitLimit) {
@@ -22,7 +39,7 @@ public class MonteCarloTree {
 		}
 		
 		public void createRoot(){
-				root = new Node();
+				root = new Node(null);
 				root.children = new ArrayList<Node>();
 		}
 		
@@ -37,13 +54,11 @@ public class MonteCarloTree {
 			if(root.children.size() == 0){
 					generateChildren(root, board, player);
 			}
-			//2/4/12
-			//Make better method to choose node to explore
-			//Just trying to get it to select some move, not generating children if visited visitLimit yet.
 			Random random = new Random();
-		//	int move = random.nextInt(root.children.size());
-			int move = selectNode();
-			root.children.get(move).visits+= 1;
+			int move = selectNode(root);
+			int new_move = 0;
+			Node current_node = root.children.get(move);
+			current_node.visits+= 1;
 			BoardGame nextBoard = (BoardGame)board.clone();
 			nextBoard.makeMove(player, move);
 			RandomPlayer opp = new RandomPlayer(player.opp, player.num);
@@ -51,38 +66,49 @@ public class MonteCarloTree {
 			RandomPlayer pointer = me;
 			int count = 0;
 			while(!nextBoard.gameOver() && count < 1000){
-					if(pointer == opp){
-							pointer = me;
-					}			
-					else {
-							pointer = opp;	
-					}
-				ArrayList<Integer> t = nextBoard.legalMoves(pointer);
-        int move2 = t.get((int)(Math.random() * t.size()));
-        nextBoard.makeMove(pointer, move2);
+							if(pointer == opp){
+									pointer = me;
+							}			
+							else {
+									pointer = opp;	
+							}
+							
+				if(current_node.visits > this.visitLimit && current_node.children == null){
+					generateChildren(current_node, nextBoard, pointer);
+				}
+				if(current_node.children != null){
+						new_move = selectNode(current_node);
+						current_node = current_node.children.get(new_move);
+						current_node.visits += 1;
+				}
+				else{
+					ArrayList<Integer> t = nextBoard.legalMoves(pointer);
+        	new_move = t.get((int)(Math.random() * t.size()));
+        }
+        nextBoard.makeMove(pointer, new_move);
         count++;
 			}
-			if (nextBoard.hasWon(player.num)) {
-				root.children.get(move).wins+=1;
-			}
+			current_node.win_calc(nextBoard.hasWon(player.num));
+				//root.children.get(move).wins+=1;
 		}
 		
-		public int selectNode(){
+		
+		public int selectNode(Node node){
 			double bestFoundValue = 0;
 			int bestFoundMove = 0;
-			for(Node c : root.children){
+			for(Node c : node.children){
 					double value;
-					if(c.visits > 10){
+					if(c.visits > this.visitLimit){
 						double winrate = ((double)c.wins / c.visits);
 						//figure out formula for choosing nodes. Using example for now.
-						value = winrate + (0.44 * Math.sqrt(Math.log(c.visits) / c.visits));
+						value = winrate + (0.44 * Math.sqrt(Math.log(node.visits) / c.visits));
 					}
 					else{
 						value = 10000 + 1000*Math.random();	
 					}
 					if(value > bestFoundValue){
 						bestFoundValue = value;
-						bestFoundMove = root.children.indexOf(c);
+						bestFoundMove = node.children.indexOf(c);
 					}
 			}
 			//System.out.println("Move:" + bestFoundMove + " Value:" + bestFoundValue);
@@ -90,10 +116,10 @@ public class MonteCarloTree {
 			return bestFoundMove;
 		}
 		
-		public void generateChildren(Node parent, BoardGame board, MonteCarloPlayer player) {
+		public void generateChildren(Node parent, BoardGame board, Player player) {
 			List<Node> children_list = new ArrayList<Node>();
 			for (Integer m : board.legalMoves(player)) {
-				Node child = new Node();
+				Node child = new Node(parent);
 				child.parent = parent;
 				children_list.add(child);
 			}
