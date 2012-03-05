@@ -90,25 +90,14 @@ public class MonteCarloTree {
 			int bestFoundMove = 0;
 			for(Node c : node.children){
 					double value;
-					boolean even_them = c.level % 2 != 1;
-					boolean odd_me = c.level % 2 != 0;
-					//System.out.print(even_them);
-					if(c.visits >= this.visitLimit){
+					if(c.visits > this.visitLimit){
 						double winrate = ((double)c.wins / c.visits);
 						value = winrate + (Math.sqrt(Math.log(node.visits) / (5*c.visits)));
-						//System.out.println(node.visits);
-					}
-					else if(c.visits < this.visitLimit && odd_me){
-						value = (10000 + 1000*Math.random());	
 					}
 					else{
-						value = -(10000 + 1000*Math.random());	
+						value = (10000 + 1000*Math.random());	
 					}
-					if(value > bestFoundValue && odd_me){
-						bestFoundValue = value;
-						bestFoundMove = node.children.indexOf(c);
-					}
-					else if(value < bestFoundValue && even_them){
+					if(value > bestFoundValue){
 						bestFoundValue = value;
 						bestFoundMove = node.children.indexOf(c);
 					}
