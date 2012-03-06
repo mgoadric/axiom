@@ -14,12 +14,15 @@ public class MonteCarloTree {
                 private int wins = 0;
                 private int visits = 0;
                 private Node parent;
-                private int my_index; 
+                private int my_index;
+                private String name;
                 private List<Node> children;
                 private int level = 0;
                 
-                public Node(Node parent){
+                public Node(Node parent, String name){
                         this.parent = parent;
+                        this.name = name;
+                        //System.out.println("Creating " + index);
                         this.my_index = index++;
                         if(parent != null){
                                 this.level = parent.level+1;
@@ -38,8 +41,12 @@ public class MonteCarloTree {
                 public String treeString(){
                         StringBuffer buffer = new StringBuffer();
                         if(children != null){
+                            if (parent != null) {
+                                buffer.append(""+parent.my_index+"->"+my_index + ";\n");   
+                            }
+                            buffer.append("" + my_index + " [ label =\"" + name + "\\n" + wins + "/" + visits + "\"];" + "\n");
+                            
                             for(Node n : children){
-                                buffer.append(""+my_index+"->"+n.my_index + ";\n");   
                                 buffer.append(n.treeString()); 
                             }
                         }
@@ -52,9 +59,9 @@ public class MonteCarloTree {
         }
         
         public void createRoot(){
-                root = new Node(null);
+                index = -1;
+                root = new Node(null, "Root");
                 root.children = new ArrayList<Node>();
-                index = 0;
         }
         
         public void findMove(BoardGame board, MonteCarloPlayer player){
@@ -82,6 +89,7 @@ public class MonteCarloTree {
                             
                 if(current_node.visits > this.visitLimit && current_node.children == null){
                     generateChildren(current_node, nextBoard, pointer);
+                    //System.out.println("added children to " + current_node.my_index);
                 }
                 if(current_node.children != null){
                         new_move = selectNode(current_node);
@@ -125,7 +133,7 @@ public class MonteCarloTree {
         public void generateChildren(Node parent, BoardGame board, Player player) {
             List<Node> children_list = new ArrayList<Node>();
             for (Integer m : board.legalMoves(player)) {
-                Node child = new Node(parent);
+                Node child = new Node(parent, "" + m + ": " + board.showMove(m));
                 child.parent = parent;
                 children_list.add(child);
             }
