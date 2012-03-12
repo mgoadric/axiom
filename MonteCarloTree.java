@@ -4,7 +4,7 @@ import java.io.*;
 //What does a node need? Must keep track of wins and visits at that particular game state. If choose this move-node, run simulations and update results. 
 //Each node would then to be one of the available LegalMoves. Make node for each LegalMove.
 
-public class MonteCarloTree {
+public class MonteCarloTree{
         
       private Node root;
         private int visitLimit;
@@ -80,12 +80,12 @@ public class MonteCarloTree {
             RandomPlayer pointer = me;
             int count = 0;
             while(!nextBoard.gameOver() && count < 1000){
-                            if(pointer == opp){
-                                    pointer = me;
-                            }           
-                            else {
-                                    pointer = opp;  
-                            }
+								if(pointer == opp){
+												pointer = me;
+								}           
+								else {
+												pointer = opp;  
+								}
                             
                 if(current_node.visits > this.visitLimit && current_node.children == null){
                     generateChildren(current_node, nextBoard, pointer);
@@ -98,10 +98,10 @@ public class MonteCarloTree {
                 }
                 else{
                     ArrayList<Integer> t = nextBoard.legalMoves(pointer);
-            new_move = t.get((int)(Math.random() * t.size()));
-        }
-        nextBoard.makeMove(pointer, new_move);
-        count++;
+                    new_move = t.get((int)(Math.random() * t.size()));
+                }
+								nextBoard.makeMove(pointer, new_move);
+								count++;
             }
             current_node.win_calc(nextBoard.hasWon(player.num));
                 //root.children.get(move).wins+=1;
@@ -115,7 +115,7 @@ public class MonteCarloTree {
                     double value;
                     if(c.visits > this.visitLimit){
                         double winrate = ((double)c.wins / c.visits);
-                        value = winrate + (Math.sqrt(Math.log(node.visits) / (5*c.visits)));
+                        value = winrate + 0.1*(Math.sqrt((Math.log(node.visits)) / (c.visits)));
                     }
                     else{
                         value = (10000 + 1000*Math.random());   
@@ -125,8 +125,8 @@ public class MonteCarloTree {
                         bestFoundMove = node.children.indexOf(c);
                     }
             }
-        //  System.out.println("Move:" + bestFoundMove + " Value:" + bestFoundValue);
-            System.out.print(".");
+          //System.out.println("Move:" + bestFoundMove + " Value:" + bestFoundValue);
+          //  System.out.print(".");
             return bestFoundMove;
         }
         
@@ -140,17 +140,32 @@ public class MonteCarloTree {
             parent.children = children_list;
         }
         
-        public int getBestMove(){
-                Node winner = root.children.get(0);
-                int winning_move = 0;
-                for (Node c : root.children){
-                        System.out.println(c.wins);
-                        if(c.visits > winner.visits){
-                            winner = c; 
-                            winning_move = root.children.indexOf(c);
-                        }
-                }
-                return winning_move;
+        public int getBestMoveVisits(){
+						Node winner = root.children.get(0);
+						int winning_move = 0;
+						for (Node c : root.children){
+								if(c.visits > winner.visits){
+										winner = c; 
+										winning_move = root.children.indexOf(c);
+								}
+						}
+						return winning_move;
+        }
+        
+        public int getBestMoveSecure(){
+        	Node winner = root.children.get(0);
+        	int winning_move = 0;
+        	for(Node c : root.children){
+        			double winrate = ((double)c.wins / c.visits);
+        			double node_value = winrate + (1/Math.sqrt(c.visits));
+        			double winner_winrate = ((double)winner.wins / winner.visits);
+        			double winner_value = winner_winrate + (1/Math.sqrt(winner.visits));
+        			if(node_value > winner_value){
+        				winner = c;
+        				winning_move = root.children.indexOf(c);
+        			}
+        	}
+        	return winning_move;
         }
         
         public void dotGraph(){
