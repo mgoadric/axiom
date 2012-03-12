@@ -11,7 +11,7 @@ public class MonteCarloPlayer extends Player {
     public MonteCarloPlayer(int playerNum, int oppNum, int simnum) {
         super(playerNum, oppNum);
         this.simnum = simnum;
-        this.moveTree = new MonteCarloTree(10);
+        this.moveTree = new MonteCarloTree(1);
     }
     
     public int chooseMove(BoardGame board) {
