@@ -116,7 +116,7 @@ public class MonteCarloTree{
                     double value;
                     if(c.visits > this.visitLimit){
                         double winrate = ((double)c.wins / c.visits);
-                        value = winrate + 0.3*(Math.sqrt((Math.log(node.visits)) / (c.visits)));
+                        value = winrate + 0.52*(Math.sqrt((Math.log(node.visits)) / (c.visits)));
                     }
                     else{
                         value = (10000 + 1000*Math.random());   
