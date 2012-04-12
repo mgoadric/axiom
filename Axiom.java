@@ -762,7 +762,7 @@ public class Axiom implements BoardGame{
             Player p2 = new RandomPlayer(Cube.WHITE, Cube.BLACK);
             g.firstPlayer(p1);
             g.secondPlayer(p2);
-            int who = Host.hostGame(g, p1, p2, false);
+            int who = Host.hostGame(g, p1, p2, false, "random");
             wins[who]++;
         }
         System.out.println("0: " + wins[0] + " 1: " + wins[1] + " tie: " + wins[2]);
@@ -770,13 +770,19 @@ public class Axiom implements BoardGame{
 
     public static void main(String args[]) {
         Axiom g = new Axiom();
+        int sims = 5000;
+        double eve = 0.37;
+        int ply = 2;
+        String dirname = "Ply"+ply+"Eve"+eve+"Sims"+sims;
         //Player p1 = new HumanPlayer(Cube.BLACK, Cube.WHITE);
         //Player p1 = new AlphaBetaPlayer(Cube.BLACK, Cube.WHITE, 4);
-        Player p1 = new MonteCarloPlayer(Cube.BLACK, Cube.WHITE, 10000);
-        Player p2 = new AlphaBetaPlayer(Cube.WHITE, Cube.BLACK, 2);
+        Player p1 = new MonteCarloPlayer(Cube.BLACK, Cube.WHITE, sims, eve);
+        Player p2 = new AlphaBetaPlayer(Cube.WHITE, Cube.BLACK, ply);
     //  Player p2 = new RandomPlayer(Cube.WHITE, Cube.BLACK);
+    //		Player p2 = new MonteCarloPlayer(Cube.WHITE, Cube.BLACK, 15000, 0.37);
         g.firstPlayer(p1);
         g.secondPlayer(p2);
-        Host.hostGame(g, p1, p2, true);
+        Host.hostGame(g, p1, p2, true, dirname);
+        System.exit(0);
     }
 }

@@ -8,10 +8,10 @@ public class MonteCarloPlayer extends Player {
     protected int simnum;
     protected MonteCarloTree moveTree;
     // Constructor    
-    public MonteCarloPlayer(int playerNum, int oppNum, int simnum) {
+    public MonteCarloPlayer(int playerNum, int oppNum, int simnum, double explorationBonus) {
         super(playerNum, oppNum);
         this.simnum = simnum;
-        this.moveTree = new MonteCarloTree(10);
+        this.moveTree = new MonteCarloTree(10, explorationBonus);
     }
     
     public int chooseMove(BoardGame board) {

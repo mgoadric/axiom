@@ -17,12 +17,14 @@ public class Host {
         } 
     }
     
-    public static int hostGame(BoardGame game, Player player1, Player player2, boolean graphics) {
+    public static int hostGame(BoardGame game, Player player1, Player player2, boolean graphics, String dirName) {
         int winner = 0;
         try {
             Player currPlayer = player1; 
             Player waitPlayer = player2;
-            PrintWriter out = new PrintWriter(new FileWriter("sessions/" + System.currentTimeMillis() + ".txt"));
+            boolean success = (new File("sessions/"+dirName)).mkdir();
+            PrintWriter out = new PrintWriter(new FileWriter("sessions/" + dirName + "/" + System.currentTimeMillis() + ".txt"));
+            BufferedWriter outZero = new BufferedWriter(new FileWriter("sessions/" + dirName + "/scores.csv", true));
             out.println("" + player1 + " vs " + player2 + "\n");
             int avemoves = 0;
             int count = 0;
@@ -90,6 +92,15 @@ public class Host {
             }
             System.out.println("Player " + winner + " wins! avemoves = " + (avemoves / count));
             out.println("Player " + winner + " wins! avemoves = " + (avemoves / count));
+            if(winner == 0){
+              outZero.write(""+0+","+1);
+            }
+            else{
+              outZero.write(""+1+","+0);
+            }
+            outZero.write("\n");
+            outZero.flush();
+            outZero.close();
             out.close();
         } catch (IOException ioe) {
             System.out.println("Something went wrong with the file output");

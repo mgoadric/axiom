@@ -8,6 +8,7 @@ public class MonteCarloTree{
         
       private Node root;
         private int visitLimit;
+        private double explorationBonus;
         private static int index = 0;
         
         private class Node {
@@ -55,8 +56,9 @@ public class MonteCarloTree{
                 }
         }
         
-        public MonteCarloTree(int visitLimit) {
+        public MonteCarloTree(int visitLimit, double explorationBonus) {
                 this.visitLimit = visitLimit;
+                this.explorationBonus = explorationBonus;
         }
         
         public void createRoot(){
@@ -116,7 +118,7 @@ public class MonteCarloTree{
                     double value;
                     if(c.visits > this.visitLimit){
                         double winrate = ((double)c.wins / c.visits);
-                        value = winrate + 0.52*(Math.sqrt((Math.log(node.visits)) / (c.visits)));
+                        value = winrate + this.explorationBonus*(Math.sqrt((Math.log(node.visits)) / (c.visits)));
                     }
                     else{
                         value = (10000 + 1000*Math.random());   
