@@ -770,7 +770,7 @@ public class Axiom implements BoardGame{
 
     public static void main(String args[]) {
         Axiom g = new Axiom();
-        int sims = 5000;
+        int sims = 20000;
         double eve = 0.37;
         int ply = 2;
         String dirname = "Ply"+ply+"Eve"+eve+"Sims"+sims;

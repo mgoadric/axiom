@@ -3,7 +3,7 @@
 
 javac *.java
 
-number=-27
+number=-30
 
 while [ $number -lt 0 ]
 do
