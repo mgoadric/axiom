@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExtensionMethods;
 
 namespace Axiom
 {
@@ -10,199 +11,187 @@ namespace Axiom
         public static int X = 0;
         public static int Y = 1;
         public static int Z = 2;
-        public static int BLACK = 0;
-        public static int WHITE = 1;
-        public static int EMPTY = 2;
-        public static int DOME = 3;
-        public static int XUP = 0;
-        public static int XDOWN = 1;
-        public static int YUP = 2;
-        public static int YDOWN = 3;
-        public static int ZUP = 4;
-        public static int ZDOWN = 5;
-        public static int NONE = -1;
-        public static string[] fnames = { "x+", "x-", "y+", "y-", "z+", "z-" };
-        public static int[] opposite = { XDOWN, XUP, YDOWN, YUP, ZDOWN, ZUP };
 
         // Data members
         private int[] location;
-        private int[] faces;
-        public int color;
+        private Dictionary<Direction, Face> faces;
+        private Color color;
         private Dictionary<string, Cube> board;
 
         // Constructor
-        public Cube(int x, int y, int z, int d1, int d2, int color)
+        public Cube(Direction d1, Direction d2, Color color)
         {
-            location = new int[3];
-            location[X] = x;
-            location[Y] = y;
-            location[Z] = z;
-            faces = new int[6];
-            for (int i = 0; i < faces.Length; i++)
+            faces = new Dictionary<Direction, Face>();
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                if (i == d1 || i == d2)
+                if (d == d1 || d == d2)
                 {
-                    faces[i] = DOME;
+                    faces[d] = Face.DOME;
                 }
                 else
                 {
-                    faces[i] = EMPTY;
+                    faces[d] = Face.EMPTY;
                 }
             }
+
             this.color = color;
         }
 
-        public Cube(string loc, int d1, int d2, int color)
+        public Cube(int x, int y, int z, Direction d1, Direction d2, Color color)
+            : this(d1, d2, color)
+        {
+            location = new int[3] {x, y, z};
+        }
+
+        public Cube(string loc, Direction d1, Direction d2, Color color)
+            : this(d1, d2, color)
         {
             location = loc.Split(",").Select(s => Int32.Parse(s)).ToArray();
-
-            faces = new int[6];
-            for (int i = 0; i < faces.Length; i++)
-            {
-                if (i == d1 || i == d2)
-                {
-                    faces[i] = DOME;
-                }
-                else
-                {
-                    faces[i] = EMPTY;
-                }
-            }
-            this.color = color;
         }
 
-        public void setBoard(Dictionary<string, Cube> b)
+        public void SetBoard(Dictionary<string, Cube> b)
         {
             this.board = b;
         }
 
-        public int getFace(int f)
+        public Face GetFace(Direction d)
         {
-            if (f == NONE)
+            if (d == Direction.NONE)
             {
-                return NONE;
+                return Face.NONE;
             }
-            return faces[f];
+            return faces[d];
         }
 
-        public string getName()
+        public string GetName()
         {
-            return "" + getX() + "," + getY() + "," + getZ();
+            return "" + GetX() + "," + GetY() + "," + GetZ();
         }
 
-        public int getX()
+        public int GetX()
         {
             return location[X];
         }
 
-        public int getY()
+        public int GetY()
         {
             return location[Y];
         }
 
-        public int getZ()
+        public int GetZ()
         {
             return location[Z];
         }
 
-        public Cube clone()
+        public Color GetColor()
         {
-            Cube c = new Cube(location[X], location[Y], location[Z], firstDome(), secondDome(), color);
-            if (c.addSceptre(firstSceptre(), getFace(firstSceptre())))
+            return color;
+        }
+
+        public Cube Clone()
+        {
+            Cube c = new Cube(location[X], location[Y], location[Z], FirstDome(), SecondDome(), color);
+            if (c.AddSceptre(FirstSceptre(), GetFace(FirstSceptre())))
             {
-                c.addSceptre(secondSceptre(), getFace(secondSceptre()));
+                c.AddSceptre(SecondSceptre(), GetFace(SecondSceptre()));
             }
             return c;
         }
 
-        public int firstDome()
+        public Direction FirstDome()
         {
-            for (int i = 0; i < faces.Length; i++)
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                if (faces[i] == DOME)
+                if (faces[d] == Face.DOME)
                 {
-                    return i;
+                    return d;
                 }
             }
+
             // should NEVER happen
             Console.Error.WriteLine("UHOH!!! MISSING A DOME!!!");
-            Console.Error.WriteLine(getName());
+            Console.Error.WriteLine(GetName());
             Environment.Exit(-1);
-            return NONE;
+            return Direction.NONE;
         }
 
-        public int secondDome()
+        public Direction SecondDome()
         {
-            for (int i = firstDome() + 1; i < faces.Length; i++)
+            Direction first = FirstDome();
+            if (first == Direction.NONE)
             {
-                if (faces[i] == DOME)
+                return Direction.NONE;
+            }
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            {
+                if (first != d && faces[d] == Face.DOME)
                 {
-                    return i;
+                    return d;
                 }
             }
-            return NONE;
+            return Direction.NONE;
         }
 
-        public int firstSceptre()
+        public Direction FirstSceptre()
         {
-            for (int i = 0; i < faces.Length; i++)
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                if (faces[i] == BLACK || faces[i] == WHITE)
+                if (faces[d] == Face.BLACK || faces[d] == Face.WHITE)
                 {
-                    return i;
+                    return d;
                 }
             }
-            return NONE;
+            return Direction.NONE;
         }
 
-        public int secondSceptre()
+        public Direction SecondSceptre()
         {
-            int f = firstSceptre();
-            if (f == NONE)
+            Direction first = FirstSceptre();
+            if (first == Direction.NONE)
             {
-                return NONE;
+                return Direction.NONE;
             }
-            for (int i = f + 1; i < faces.Length; i++)
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                if (faces[i] == BLACK || faces[i] == WHITE)
+                if (first != d && faces[d] == Face.BLACK || faces[d] == Face.WHITE)
                 {
-                    return i;
+                    return d;
                 }
             }
-            return NONE;
+            return Direction.NONE;
         }
 
-        public bool addSceptre(int f, int color)
+        public bool AddSceptre(Direction d, Face color)
         {
-            if (f != NONE && isEmpty(f))
+            if (d != Direction.NONE && IsEmpty(d))
             {
-                faces[f] = color;
+                faces[d] = color;
                 return true;
             }
             return false;
         }
 
-        public int removeSceptre(int f)
+        public Face RemoveSceptre(Direction d)
         {
-            if (faces[f] == WHITE || faces[f] == BLACK)
+            if (faces[d] == Face.WHITE || faces[d] == Face.BLACK)
             {
-                int temp = faces[f];
-                faces[f] = EMPTY;
-                // 
+                Face temp = faces[d];
+                faces[d] = Face.EMPTY;
                 return temp;
             }
-            return -1;
+            // TODO throw exception??
+            return Face.NONE;
         }
 
-        public bool isEncroached()
+        public bool IsEncroached()
         {
-            for (int i = 0; i < faces.Length; i++)
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                if (faces[i] == WHITE && color == BLACK)
+                if (faces[d] == Face.WHITE && color == Color.BLACK)
                 {
                     return true;
                 }
-                if (faces[i] == BLACK && color == WHITE)
+                if (faces[d] == Face.BLACK && color == Color.WHITE)
                 {
                     return true;
                 }
@@ -210,11 +199,11 @@ namespace Axiom
             return false;
         }
 
-        public bool isOccupied()
+        public bool IsOccupied()
         {
-            for (int i = 0; i < faces.Length; i++)
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                if (faces[i] == WHITE || faces[i] == BLACK)
+                if (faces[d] == Face.WHITE || faces[d] == Face.BLACK)
                 {
                     return true;
                 }
@@ -222,114 +211,108 @@ namespace Axiom
             return false;
         }
 
-        public bool isFree()
+        public bool IsFree()
         {
-            if (isOccupied())
+            if (IsOccupied())
             {
                 return false;
             }
-            Cube above = getNeighbor(ZUP);
-            if (above == null)
-            {
-                return true;
-            }
-            return false;
+
+            return !HasNeighbor(Direction.ZUP);
         }
 
-        public Cube getNeighbor(int f)
+        public bool HasNeighbor(Direction d)
         {
-            return board[getNeighborstring(f, 1)];
+            return board.ContainsKey(GetNeighborstring(d, 1));
         }
 
-        public string getNeighborstring(int f, int d)
+        public bool HasNeighbor(int dx, int dy, int dz)
         {
-            if (f == ZUP)
-            {
-                return "" + getX() + "," + getY() + "," + (getZ() + d);
-            }
-            else if (f == ZDOWN)
-            {
-                return "" + getX() + "," + getY() + "," + (getZ() - d);
-            }
-            else if (f == YUP)
-            {
-                return "" + getX() + "," + (getY() + d) + "," + getZ();
-            }
-            else if (f == YDOWN)
-            {
-                return "" + getX() + "," + (getY() - d) + "," + getZ();
-            }
-            else if (f == XUP)
-            {
-                return "" + (getX() + d) + "," + getY() + "," + getZ();
-            }
-            else if (f == XDOWN)
-            {
-                return "" + (getX() - d) + "," + getY() + "," + getZ();
-            }
-            return null;
+            return board.ContainsKey("" + (GetX() + dx) + "," + (GetY() + dy) + "," + (GetZ() + dz));
         }
 
-        public Cube getNeighbor(int dx, int dy, int dz)
+        public Cube GetNeighbor(Direction d)
         {
-            return board["" + (getX() + dx) + "," + (getY() + dy) + "," + (getZ() + dz)];
+            return board[GetNeighborstring(d, 1)];
         }
 
-        public List<string> freeFaces()
+        public string GetNeighborstring(Direction d, int delta)
         {
-            List<string> free = new List<string>();
-            for (int i = 0; i < faces.Length; i++)
+            switch (d)
             {
-                if (faces[i] == EMPTY || faces[i] == DOME)
+                case Direction.ZUP:
+                    return "" + GetX() + "," + GetY() + "," + (GetZ() + delta);
+                case Direction.ZDOWN:
+                    return "" + GetX() + "," + GetY() + "," + (GetZ() - delta);
+                case Direction.YUP:
+                    return "" + GetX() + "," + (GetY() + delta) + "," + GetZ();
+                case Direction.YDOWN:
+                    return "" + GetX() + "," + (GetY() - delta) + "," + GetZ();
+                case Direction.XUP:
+                    return "" + (GetX() + delta) + "," + GetY() + "," + GetZ();
+                case Direction.XDOWN:
+                    return "" + (GetX() - delta) + "," + GetY() + "," + GetZ();
+                default:
+                    return null;
+            }
+        }
+
+        public Cube GetNeighbor(int dx, int dy, int dz)
+        {
+            return board["" + (GetX() + dx) + "," + (GetY() + dy) + "," + (GetZ() + dz)];
+        }
+
+        public List<Direction> FreeFaces()
+        {
+            List<Direction> free = new List<Direction>();
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            {
+                if (faces[d] == Face.EMPTY || faces[d] == Face.DOME)
                 {
-                    string neighbor = null;
-                    Cube support = null;
-                    if (i == XUP)
+                    bool possible = false;
+                    if (d == Direction.XUP)
                     {
-                        support = getNeighbor(1, 0, -1);
-                        if (location[Z] == 1 || support != null)
+                        if (location[Z] == 1 || HasNeighbor(1, 0, -1))
                         {
-                            neighbor = getNeighborstring(i, 1);
+                            possible = true;
                         }
                     }
-                    else if (i == YUP)
+                    else if (d == Direction.YUP)
                     {
-                        support = getNeighbor(0, 1, -1);
-                        if (location[Z] == 1 || support != null)
+                        if (location[Z] == 1 || HasNeighbor(0, 1, -1))
                         {
-                            neighbor = getNeighborstring(i, 1);
+                            possible = true;
                         }
                     }
-                    else if (i == ZUP)
+                    else if (d == Direction.ZUP)
                     {
-                        neighbor = getNeighborstring(i, 1);
+                        possible = true;
                     }
-                    else if (i == XDOWN)
+                    else if (d == Direction.XDOWN)
                     {
-                        support = getNeighbor(-1, 0, -1);
-                        if (location[Z] == 1 || support != null)
+                        if (location[Z] == 1 || HasNeighbor(-1, 0, -1))
                         {
-                            neighbor = getNeighborstring(i, 1);
+                            possible = true;
                         }
                     }
-                    else if (i == YDOWN)
+                    else if (d == Direction.YDOWN)
                     {
-                        support = getNeighbor(0, -1, -1);
-                        if (location[Z] == 1 || support != null)
+                        if (location[Z] == 1 || HasNeighbor(0, -1, -1))
                         {
-                            neighbor = getNeighborstring(i, 1);
+                            possible = true;
                         }
                     }
-                    if (neighbor != null && board[neighbor] == null)
+
+                    if (possible && !HasNeighbor(d))
                     {
-                        free.Add(neighbor);
+                        free.Add(d);
                     }
                 }
             }
             return free;
         }
 
-        public bool legal()
+        public bool IsLegal()
         {
 
             bool locked = false;
@@ -337,15 +320,15 @@ namespace Axiom
             // if you are not at Z level 1, you need support and locking in the z direction.
             if (location[Z] > 1)
             {
-                string support = getNeighborstring(ZDOWN, 1);
-                if (!board.ContainsKey(support))
+                if (!HasNeighbor(Direction.ZDOWN))
                 {
                     return false;
                 }
                 else
                 {
-                    if ((faces[ZDOWN] == DOME && board[support].getFace(ZUP) == EMPTY) ||
-                        (faces[ZDOWN] == EMPTY && board[support].getFace(ZUP) == DOME))
+                    Cube support = GetNeighbor(Direction.ZDOWN);
+                    if ((faces[Direction.ZDOWN] == Face.DOME && support.GetFace(Direction.ZUP) == Face.EMPTY) ||
+                        (faces[Direction.ZDOWN] == Face.EMPTY && support.GetFace(Direction.ZUP) == Face.DOME))
                     {
                         locked = true;
                     }
@@ -357,23 +340,23 @@ namespace Axiom
             }
 
             // Cannot have domes against the table.
-            if (location[Z] == 1 && (firstDome() == ZDOWN || secondDome() == ZDOWN))
+            if (location[Z] == 1 && (FirstDome() == Direction.ZDOWN || SecondDome() == Direction.ZDOWN))
             {
                 return false;
             }
 
             // do you have a locked dome and no conflicts DOME - DOME? *Denotes legal positioning*
-            for (int i = 0; i < faces.Length; i++)
+            foreach (Direction d in Enum.GetValues(typeof(Direction)))
             {
-                string neighbor = getNeighborstring(i, 1);
-                if (board.ContainsKey(neighbor))
+                if (HasNeighbor(d))
                 {
-                    if ((faces[i] == DOME && board[neighbor].getFace(opposite[i]) == EMPTY) ||
-                        (faces[i] == EMPTY && board[neighbor].getFace(opposite[i]) == DOME))
+                    Cube neighbor = GetNeighbor(d);
+                    if ((faces[d] == Face.DOME && neighbor.GetFace(d.Opposite()) == Face.EMPTY) ||
+                        (faces[d] == Face.EMPTY && neighbor.GetFace(d.Opposite()) == Face.DOME))
                     {
                         locked = true;
                     }
-                    if (faces[i] == DOME && board[neighbor].getFace(opposite[i]) == DOME)
+                    if (faces[d] == Face.DOME && neighbor.GetFace(d.Opposite()) == Face.DOME)
                     {
                         return false;
                     }
@@ -382,60 +365,59 @@ namespace Axiom
             return locked;
         }
 
-        public bool twoSceptreSameColor()
+        public bool HasTwoSceptreSameColor()
         {
-            int first = getFace(firstSceptre());
-            int second = getFace(secondSceptre());
-            if (first != NONE)
+            Face first = GetFace(FirstSceptre());
+            if (first != Face.NONE)
             {
-                return first == second;
+                return first == GetFace(SecondSceptre());
             }
             return false;
         }
 
-        public bool twoSceptreDifferentColor()
+        public bool HasTwoSceptreDifferentColor()
         {
-            int first = getFace(firstSceptre());
-            int second = getFace(secondSceptre());
-            if (first != NONE && second != NONE)
+            Face first = GetFace(FirstSceptre());
+            Face second = GetFace(SecondSceptre());
+            if (first != Face.NONE && second != Face.NONE)
             {
                 return first != second;
             }
             return false;
         }
 
-        public bool isEmpty(int f)
+        public bool IsEmpty(Direction d)
         {
-            return faces[f] == EMPTY;
+            return faces[d] == Face.EMPTY;
         }
 
         // Rotate the cube in the direction d, being one of X, Y or Z
         // MHG 11/5/2011 Ended up not being used..
-        public void rotate(int d)
+        public void Rotate(int d)
         {
             if (d == Y)
             {
-                int temp = faces[XUP];
-                faces[XUP] = faces[ZUP];
-                faces[ZUP] = faces[XDOWN];
-                faces[XDOWN] = faces[ZDOWN];
-                faces[ZDOWN] = temp;
+                Face temp = faces[Direction.XUP];
+                faces[Direction.XUP] = faces[Direction.ZUP];
+                faces[Direction.ZUP] = faces[Direction.XDOWN];
+                faces[Direction.XDOWN] = faces[Direction.ZDOWN];
+                faces[Direction.ZDOWN] = temp;
             }
             else if (d == X)
             {
-                int temp = faces[YUP];
-                faces[YUP] = faces[ZUP];
-                faces[ZUP] = faces[YDOWN];
-                faces[YDOWN] = faces[ZDOWN];
-                faces[ZDOWN] = temp;
+                Face temp = faces[Direction.YUP];
+                faces[Direction.YUP] = faces[Direction.ZUP];
+                faces[Direction.ZUP] = faces[Direction.YDOWN];
+                faces[Direction.YDOWN] = faces[Direction.ZDOWN];
+                faces[Direction.ZDOWN] = temp;
             }
             else if (d == Z)
             {
-                int temp = faces[XUP];
-                faces[XUP] = faces[YDOWN];
-                faces[YDOWN] = faces[XDOWN];
-                faces[XDOWN] = faces[YUP];
-                faces[YUP] = temp;
+                Face temp = faces[Direction.XUP];
+                faces[Direction.XUP] = faces[Direction.YDOWN];
+                faces[Direction.YDOWN] = faces[Direction.XDOWN];
+                faces[Direction.XDOWN] = faces[Direction.YUP];
+                faces[Direction.YUP] = temp;
             }
         }
 
@@ -443,20 +425,14 @@ namespace Axiom
         override
         public string ToString()
         {
-            string c = "C (" + getName() + ")";
-            c += fnames[firstDome()];
-            if (secondDome() != NONE)
+            string c = "C (" + GetName() + ")";
+            c += FirstDome().Name();
+            if (SecondDome() != Direction.NONE)
             {
-                c += " " + fnames[secondDome()];
+                c += " " + SecondDome().Name();
             }
-            if (color == WHITE)
-            {
-                c = " (white) " + c;
-            }
-            else
-            {
-                c = " (black) " + c;
-            }
+
+            c = " (" + Color.WHITE.ToString().ToLower() + ") " + c;
 
             return c;
         }
@@ -464,32 +440,19 @@ namespace Axiom
         // Use the notation from the play by email paper
         public string ToSceptreString()
         {
-            string t = "";
+
+            // TODO This is convoluted...
             string y = "";
-            string s = "S (" + getName() + ")";
-            if (firstSceptre() != NONE)
+            string s = "S (" + GetName() + ")";
+            if (FirstSceptre() != Direction.NONE)
             {
-                t += s + fnames[firstSceptre()];
-                if (getFace(firstSceptre()) == WHITE)
-                {
-                    t = " (white) " + t;
-                }
-                else
-                {
-                    t = " (black) " + t;
-                }
+                string t = s + FirstSceptre().Name();
+                t = " (" + GetFace(FirstSceptre()).ToString().ToLower() + ") " + t;
                 y += t;
-                if (secondSceptre() != NONE)
+                if (SecondSceptre() != Direction.NONE)
                 {
-                    t = s + fnames[secondSceptre()];
-                    if (getFace(secondSceptre()) == WHITE)
-                    {
-                        t = " (white) " + t;
-                    }
-                    else
-                    {
-                        t = " (black) " + t;
-                    }
+                    t = s + SecondSceptre().Name();
+                    t = " (" + GetFace(SecondSceptre()).ToString().ToLower() + ") " + t;
                     y += "\n" + t;
                 }
             }
@@ -497,5 +460,3 @@ namespace Axiom
         }
     }
 }
-
-

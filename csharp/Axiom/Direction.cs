@@ -9,6 +9,7 @@ namespace Axiom
         YDOWN,
         ZUP,
         ZDOWN,
+        NONE
     }
 }
 
