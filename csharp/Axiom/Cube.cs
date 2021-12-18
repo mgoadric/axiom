@@ -22,7 +22,7 @@ namespace Axiom
         public Cube(Direction d1, Direction d2, Color color)
         {
             faces = new Dictionary<Direction, Face>();
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (d == d1 || d == d2)
                 {
@@ -46,7 +46,11 @@ namespace Axiom
         public Cube(string loc, Direction d1, Direction d2, Color color)
             : this(d1, d2, color)
         {
-            location = loc.Split(",").Select(s => Int32.Parse(s)).ToArray();
+            string[] pieces = loc.Split(",");
+            location = new int[3] {Int32.Parse(pieces[0]),
+                Int32.Parse(pieces[1]),
+                Int32.Parse(pieces[2]),
+                };
         }
 
         public void SetBoard(Dictionary<string, Cube> b)
@@ -100,7 +104,7 @@ namespace Axiom
 
         public Direction FirstDome()
         {
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (faces[d] == Face.DOME)
                 {
@@ -122,7 +126,7 @@ namespace Axiom
             {
                 return Direction.NONE;
             }
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (first != d && faces[d] == Face.DOME)
                 {
@@ -134,7 +138,7 @@ namespace Axiom
 
         public Direction FirstSceptre()
         {
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (faces[d] == Face.BLACK || faces[d] == Face.WHITE)
                 {
@@ -151,9 +155,9 @@ namespace Axiom
             {
                 return Direction.NONE;
             }
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
-                if (first != d && faces[d] == Face.BLACK || faces[d] == Face.WHITE)
+                if (first != d && (faces[d] == Face.BLACK || faces[d] == Face.WHITE))
                 {
                     return d;
                 }
@@ -185,7 +189,7 @@ namespace Axiom
 
         public bool IsEncroached()
         {
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (faces[d] == Face.WHITE && color == Color.BLACK)
                 {
@@ -201,7 +205,7 @@ namespace Axiom
 
         public bool IsOccupied()
         {
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (faces[d] == Face.WHITE || faces[d] == Face.BLACK)
                 {
@@ -223,7 +227,7 @@ namespace Axiom
 
         public bool HasNeighbor(Direction d)
         {
-            return board.ContainsKey(GetNeighborstring(d, 1));
+            return board.ContainsKey(GetNeighborString(d, 1));
         }
 
         public bool HasNeighbor(int dx, int dy, int dz)
@@ -233,10 +237,10 @@ namespace Axiom
 
         public Cube GetNeighbor(Direction d)
         {
-            return board[GetNeighborstring(d, 1)];
+            return board[GetNeighborString(d, 1)];
         }
 
-        public string GetNeighborstring(Direction d, int delta)
+        public string GetNeighborString(Direction d, int delta)
         {
             switch (d)
             {
@@ -265,7 +269,7 @@ namespace Axiom
         public List<Direction> FreeFaces()
         {
             List<Direction> free = new List<Direction>();
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (faces[d] == Face.EMPTY || faces[d] == Face.DOME)
                 {
@@ -346,7 +350,7 @@ namespace Axiom
             }
 
             // do you have a locked dome and no conflicts DOME - DOME? *Denotes legal positioning*
-            foreach (Direction d in Enum.GetValues(typeof(Direction)))
+            foreach (Direction d in MyExtensions.validDirections)
             {
                 if (HasNeighbor(d))
                 {
@@ -432,7 +436,7 @@ namespace Axiom
                 c += " " + SecondDome().Name();
             }
 
-            c = " (" + Color.WHITE.ToString().ToLower() + ") " + c;
+            c = " (" + color.ToString().ToLower() + ") " + c;
 
             return c;
         }

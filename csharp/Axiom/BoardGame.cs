@@ -8,7 +8,7 @@ namespace Axiom
 
         public bool GameOver();
 
-        public bool HasWon(int color);
+        public bool HasWon(Color color);
 
         public bool MakeMove(Player p, int m);
 
@@ -22,9 +22,9 @@ namespace Axiom
 
         public BoardGame Clone();
 
-        public int GetTurn();
+        public Color GetTurn();
 
-        public int Heuristic();
+        public int Heuristic(Color color);
 
     }
 }

@@ -5,6 +5,16 @@ namespace ExtensionMethods
 {
     public static class MyExtensions
     {
+        public static Direction[] validDirections =
+        {
+            Direction.XUP,
+            Direction.XDOWN,
+            Direction.YUP,
+            Direction.YDOWN,
+            Direction.ZUP,
+            Direction.ZDOWN
+        };
+
         public static Direction Opposite(this Direction d)
         {
             switch (d)
@@ -44,6 +54,27 @@ namespace ExtensionMethods
                     return "z-";
                 default:
                     return "none";
+            }
+        }
+
+        public static Direction DirectionStr(this String s)
+        {
+            switch (s)
+            {
+                case "x+":
+                    return Direction.XUP;
+                case "x-":
+                    return Direction.XDOWN;
+                case "y+":
+                    return Direction.YUP;
+                case "y-":
+                    return Direction.YDOWN;
+                case "z+":
+                    return Direction.ZUP;
+                case "z-":
+                    return Direction.ZDOWN;
+                default:
+                    return Direction.NONE;
             }
         }
     }

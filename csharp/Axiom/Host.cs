@@ -8,9 +8,9 @@ namespace Axiom
 
         public static bool VERBOSE = true;
 
-        public static int HostGame(BoardGame game, Player player1, Player player2, string dirName)
+        public static Color HostGame(BoardGame game, Player player1, Player player2, string dirName)
         {
-            int winner = 0;
+            Color winner = Color.TIE;
 
             Player currPlayer = player1;
             Player waitPlayer = player2;
@@ -18,7 +18,7 @@ namespace Axiom
             var sw = OpenStream(@".\textfile.txt");
             if (sw is null)
             {
-                return -1;
+                return Color.TIE;
             }
 
             sw.WriteLine("" + player1 + " vs " + player2 + "\n");
@@ -48,8 +48,8 @@ namespace Axiom
                 }
                 if (VERBOSE)
                 {
-                    Console.WriteLine("" + currPlayer.num + ": Making move " + move + " " + game.ShowMove(move));
-                    sw.WriteLine("" + currPlayer.num + ": Making move " + move + " " + game.ShowMove(move));
+                    Console.WriteLine("" + currPlayer.Color + ": Making move " + move + " " + game.ShowMove(move));
+                    sw.WriteLine("" + currPlayer.Color + ": Making move " + move + " " + game.ShowMove(move));
                     sw.Flush();
                 }
                 game.MakeMove(currPlayer, move);
@@ -71,18 +71,17 @@ namespace Axiom
                 sw.WriteLine(game);
             }
 
-            if (game.HasWon(currPlayer.num))
+            if (game.HasWon(currPlayer.Color))
             {
-                winner = currPlayer.num;
+                winner = currPlayer.Color;
             }
-            else if (game.HasWon(waitPlayer.num))
+            else if (game.HasWon(waitPlayer.Color))
             {
-                winner = waitPlayer.num;
+                winner = waitPlayer.Color;
             }
             else
             {
                 Console.WriteLine("Tie Game avemoves = " + (avemoves / count));
-                winner = 2;
             }
             Console.WriteLine("Player " + winner + " wins! avemoves = " + (avemoves / count));
             sw.WriteLine("Player " + winner + " wins! avemoves = " + (avemoves / count));
@@ -104,7 +103,7 @@ namespace Axiom
 
             try
             {
-                var fs = new FileStream(path, FileMode.CreateNew);
+                var fs = new FileStream(path, FileMode.OpenOrCreate);
                 return new StreamWriter(fs);
             }
             catch (FileNotFoundException)

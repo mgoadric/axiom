@@ -7,20 +7,20 @@ namespace Axiom
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
 
-            Dictionary<string, Cube> b = new Dictionary<string, Cube>();
-            Cube stuff = new Cube(-1, 0, 2, Direction.YDOWN, Direction.XDOWN, Color.BLACK);
-            stuff.AddSceptre(Direction.ZUP, Face.BLACK);
-            stuff.SetBoard(b);
-            b[stuff.GetName()] = stuff;
-            Console.WriteLine(stuff);
-            Console.WriteLine(stuff.ToSceptreString());
-            Console.WriteLine("rotating");
-            stuff.Rotate(Cube.X);
-            Console.WriteLine(stuff);
-            Console.WriteLine(stuff.ToSceptreString());
 
+            int[] wins = new int[3];
+            for (int i = 0; i < 10; i++)
+            {
+                Axiom g = new Axiom();
+                Player p1 = new RandomPlayer(Color.BLACK, Color.WHITE);
+                Player p2 = new AlphaBetaPlayer(Color.WHITE, Color.BLACK, 3);
+                g.FirstPlayer(p1);
+                g.SecondPlayer(p2);
+                Color who = Host.HostGame(g, p1, p2, "random");
+                wins[(int)who]++;
+            }
+            Console.WriteLine("0: " + wins[0] + " 1: " + wins[1] + " tie: " + wins[2]);
         }
     }
 }

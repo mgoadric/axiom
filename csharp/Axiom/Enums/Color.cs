@@ -4,7 +4,8 @@ namespace Axiom
     public enum Color
     {
         BLACK,
-        WHITE
+        WHITE,
+        TIE
     }
 }
 

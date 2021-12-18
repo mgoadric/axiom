@@ -8,7 +8,7 @@ namespace Axiom
         private Random random = new Random();
 
         // Constructor    
-        RandomPlayer(int playerNum, int oppNum) : base(playerNum, oppNum) { }
+        public RandomPlayer(Color player, Color opp) : base(player, opp) { }
 
         override
         public int ChooseMove(BoardGame board)

@@ -7,8 +7,8 @@ namespace Axiom
         protected int ply;
 
         // Constructor    
-        AlphaBetaPlayer(int playerNum, int oppNum, int ply)
-        : base(playerNum, oppNum)
+        public AlphaBetaPlayer(Color player, Color opp, int ply)
+        : base(player, opp)
         {
             this.ply = ply;
         }
@@ -34,7 +34,7 @@ namespace Axiom
                 }
                 BoardGame nb = (BoardGame)board.Clone();
                 nb.MakeMove(this, m);
-                AlphaBetaPlayer opp = new AlphaBetaPlayer(this.opp, this.num, this.ply);
+                AlphaBetaPlayer opp = new AlphaBetaPlayer(this.opp, this.color, this.ply);
                 int[] s = opp.AlphaBetaMinValue(nb, ply - 1, turn, alpha, beta);
                 if (s[1] == -1)
                 {
@@ -74,7 +74,7 @@ namespace Axiom
                 }
 
                 // make a new player to play the other side
-                AlphaBetaPlayer opponent = new AlphaBetaPlayer(this.opp, this.num, this.ply);
+                AlphaBetaPlayer opponent = new AlphaBetaPlayer(this.opp, this.color, this.ply);
 
                 // Copy the board so that we don't ruin it
                 BoardGame nextBoard = (BoardGame)board.Clone();
@@ -114,7 +114,7 @@ namespace Axiom
                     return s;
                 }
                 // make a new player to play the other side
-                AlphaBetaPlayer opponent = new AlphaBetaPlayer(this.opp, this.num, this.ply);
+                AlphaBetaPlayer opponent = new AlphaBetaPlayer(this.opp, this.color, this.ply);
                 // Copy the board so that we don't ruin it
                 BoardGame nextBoard = (BoardGame)board.Clone();
                 nextBoard.MakeMove(this, m);

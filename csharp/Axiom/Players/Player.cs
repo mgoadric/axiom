@@ -5,28 +5,30 @@ namespace Axiom
     {
 
         // Data Members
-        public int num;
-        protected int opp;
-        protected int type;
+        protected Color color;
+        protected Color opp;
+
+        public Color Color { get { return color; } }
+        public Color Opp { get { return opp; } }
 
         // Constructor    
-        public Player(int playerNum, int oppNum)
+        public Player(Color player, Color opp)
         {
-            this.num = playerNum;
-            this.opp = oppNum;
+            this.color = player;
+            this.opp = opp;
         }
 
         // Methods
         override
         public string ToString()
         {
-            return "" + this.num + ":" + this.GetType().Name;
+            return "" + this.color + ":" + this.GetType().Name;
         }
 
         public int Score(BoardGame board)
         {
             // Returns the score for this player given the state of the board
-            if (board.HasWon(this.num))
+            if (board.HasWon(this.color))
             {
                 return 100;
             }
@@ -36,8 +38,7 @@ namespace Axiom
             }
             else
             {
-                return board.Heuristic();
-                //return b.freeCubes(this.num) + b.numCubes(this.num) - (b.freeCubes(this.opp) + b.numCubes(this.opp));
+                return board.Heuristic(this.color);
             }
         }
 
