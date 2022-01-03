@@ -15,7 +15,7 @@ namespace Axiom
             Player currPlayer = player1;
             Player waitPlayer = player2;
 
-            var sw = OpenStream(@".\textfile.txt");
+            var sw = OpenStream(@"textfile.txt");
             if (sw is null)
             {
                 return Color.TIE;
@@ -32,7 +32,7 @@ namespace Axiom
                 {
                     Console.WriteLine("Current Board: Turn " + count);
                     Console.WriteLine(game);
-                    sw.WriteLine("" + count + "| ");
+                    sw.Write("" + count + "| ");
                 }
 
                 if (VERBOSE)

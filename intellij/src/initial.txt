@@ -1,0 +1,16 @@
+ (black) C (1,0,1)x- z+
+ (black) C (1,0,2)x+
+ (black) S (1,0,2)z+
+ (white) C (-1,1,2)x-
+ (white) S (-1,1,2)z+
+ (white) C (-1,1,1)x+ z+
+ (white) C (1,1,2)x-
+ (white) S (1,1,2)z+
+ (white) C (1,1,1)x+ z+
+ (black) C (-1,0,1)x- z+
+ (black) C (-1,0,2)x+
+ (black) S (-1,0,2)z+
+ (black) C (0,0,2)z-
+ (white) C (0,1,2)z-
+ (white) C (0,1,1)x+ y+
+ (black) C (0,0,1)x- y-

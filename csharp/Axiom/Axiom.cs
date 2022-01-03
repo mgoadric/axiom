@@ -403,10 +403,8 @@ namespace Axiom
                                     {
                                         barriers = true;
                                     }
-                                    if (cur.HasNeighbor(xmod2[i], ymod2[i], zmod2[i]) && !barriers)
+                                    if (!cur.HasNeighbor(xmod2[i], ymod2[i], zmod2[i]) && !barriers)
                                     {
-                                        Cube who2 = cur.GetNeighbor(xmod2[i], ymod2[i], zmod2[i]);
-
                                         if (!sceptlocs.Contains(who.GetNeighborString(face, 1)) &&
                                             !board.ContainsKey(who.GetNeighborString(face, 2)) &&
                                             !sceptdirs.Contains(who.GetNeighborString(face, 2) + "|" + face.Opposite()))
