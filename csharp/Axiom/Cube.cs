@@ -17,6 +17,8 @@ namespace Axiom
         private Dictionary<Direction, Face> faces;
         private Color color;
         private Dictionary<string, Cube> board;
+        private Direction firstDome;
+        private Direction secondDome;
 
         // Constructor
         public Cube(Direction d1, Direction d2, Color color)
@@ -35,6 +37,9 @@ namespace Axiom
             }
 
             this.color = color;
+
+            firstDome = d1;
+            secondDome = d2;
         }
 
         public Cube(int x, int y, int z, Direction d1, Direction d2, Color color)
@@ -104,36 +109,12 @@ namespace Axiom
 
         public Direction FirstDome()
         {
-            foreach (Direction d in MyExtensions.validDirections)
-            {
-                if (faces[d] == Face.DOME)
-                {
-                    return d;
-                }
-            }
-
-            // should NEVER happen
-            Console.Error.WriteLine("UHOH!!! MISSING A DOME!!!");
-            Console.Error.WriteLine(GetName());
-            Environment.Exit(-1);
-            return Direction.NONE;
+            return firstDome;
         }
 
         public Direction SecondDome()
         {
-            Direction first = FirstDome();
-            if (first == Direction.NONE)
-            {
-                return Direction.NONE;
-            }
-            foreach (Direction d in MyExtensions.validDirections)
-            {
-                if (first != d && faces[d] == Face.DOME)
-                {
-                    return d;
-                }
-            }
-            return Direction.NONE;
+            return secondDome;
         }
 
         public Direction FirstSceptre()
@@ -205,14 +186,7 @@ namespace Axiom
 
         public bool IsOccupied()
         {
-            foreach (Direction d in MyExtensions.validDirections)
-            {
-                if (faces[d] == Face.WHITE || faces[d] == Face.BLACK)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return FirstSceptre() != Direction.NONE;
         }
 
         public bool IsFree()
@@ -382,10 +356,13 @@ namespace Axiom
         public bool HasTwoSceptreDifferentColor()
         {
             Face first = GetFace(FirstSceptre());
-            Face second = GetFace(SecondSceptre());
-            if (first != Face.NONE && second != Face.NONE)
+            if (first != Face.NONE)
             {
-                return first != second;
+                Face second = GetFace(SecondSceptre());
+                if (second != Face.NONE)
+                {
+                    return first != second;
+                }
             }
             return false;
         }
@@ -393,36 +370,6 @@ namespace Axiom
         public bool IsEmpty(Direction d)
         {
             return faces[d] == Face.EMPTY;
-        }
-
-        // Rotate the cube in the direction d, being one of X, Y or Z
-        // MHG 11/5/2011 Ended up not being used..
-        public void Rotate(int d)
-        {
-            if (d == Y)
-            {
-                Face temp = faces[Direction.XUP];
-                faces[Direction.XUP] = faces[Direction.ZUP];
-                faces[Direction.ZUP] = faces[Direction.XDOWN];
-                faces[Direction.XDOWN] = faces[Direction.ZDOWN];
-                faces[Direction.ZDOWN] = temp;
-            }
-            else if (d == X)
-            {
-                Face temp = faces[Direction.YUP];
-                faces[Direction.YUP] = faces[Direction.ZUP];
-                faces[Direction.ZUP] = faces[Direction.YDOWN];
-                faces[Direction.YDOWN] = faces[Direction.ZDOWN];
-                faces[Direction.ZDOWN] = temp;
-            }
-            else if (d == Z)
-            {
-                Face temp = faces[Direction.XUP];
-                faces[Direction.XUP] = faces[Direction.YDOWN];
-                faces[Direction.YDOWN] = faces[Direction.XDOWN];
-                faces[Direction.XDOWN] = faces[Direction.YUP];
-                faces[Direction.YUP] = temp;
-            }
         }
 
         // Use the notation from the play by email paper

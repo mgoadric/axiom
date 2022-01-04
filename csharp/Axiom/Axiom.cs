@@ -738,13 +738,14 @@ namespace Axiom
                 // if sceptre currently encroaching and leaving that cube, 
                 // make cube disappear
                 // MHG 12/18/2011 Must be returning to the player's color, not just leaving free cube!
-                if ((sclr == Face.BLACK && color == Color.WHITE ||
-                     sclr == Face.WHITE && color == Color.BLACK) &&
-                    (sclr == Face.BLACK && color == Color.BLACK ||
-                     sclr == Face.WHITE && color == Color.WHITE) &&
+                if (((sclr == Face.BLACK && color == Color.WHITE) ||
+                     (sclr == Face.WHITE && color == Color.BLACK)) &&
+                    ((sclr == Face.BLACK && c2.GetColor() == Color.BLACK) ||
+                     (sclr == Face.WHITE && c2.GetColor() == Color.WHITE)) &&
                      was.IsFree())
                 {
                     board.Remove(actualcube);
+                    Console.WriteLine("REMOVING CUBE!!!");
                 }
             }
 
