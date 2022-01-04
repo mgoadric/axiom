@@ -169,17 +169,19 @@ namespace Axiom
 
         public bool IsEncroached()
         {
-            foreach (Direction d in MyExtensions.validDirections)
+            if (FirstSceptre() != Direction.NONE)
             {
-                if (faces[d] == Face.WHITE && color == Color.BLACK)
+                if (faces[FirstSceptre()] == Face.WHITE && color == Color.BLACK)
                 {
                     return true;
                 }
-                if (faces[d] == Face.BLACK && color == Color.WHITE)
+                if (SecondSceptre() != Direction.NONE &&
+                    faces[SecondSceptre()] == Face.WHITE && color == Color.BLACK)
                 {
                     return true;
                 }
             }
+            
             return false;
         }
 
@@ -375,7 +377,7 @@ namespace Axiom
         override
         public string ToString()
         {
-            string c = "C (" + GetName() + ")";
+            string c = "C (" + GetName() + ") ";
             c += FirstDome().Name();
             if (SecondDome() != Direction.NONE)
             {
@@ -390,20 +392,14 @@ namespace Axiom
         // Use the notation from the play by email paper
         public string ToSceptreString()
         {
-
-            // TODO This is convoluted...
             string y = "";
-            string s = "S (" + GetName() + ")";
+            string s = "S (" + GetName() + ") ";
             if (FirstSceptre() != Direction.NONE)
             {
-                string t = s + FirstSceptre().Name();
-                t = " (" + GetFace(FirstSceptre()).ToString().ToLower() + ") " + t;
-                y += t;
+                y += " (" + GetFace(FirstSceptre()).ToString().ToLower() + ") " + s + FirstSceptre().Name();
                 if (SecondSceptre() != Direction.NONE)
                 {
-                    t = s + SecondSceptre().Name();
-                    t = " (" + GetFace(SecondSceptre()).ToString().ToLower() + ") " + t;
-                    y += "\n" + t;
+                    y += "\n" + " (" + GetFace(SecondSceptre()).ToString().ToLower() + ") " + s + SecondSceptre().Name();
                 }
             }
             return y;
