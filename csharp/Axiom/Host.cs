@@ -15,7 +15,7 @@ namespace Axiom
             Player currPlayer = player1;
             Player waitPlayer = player2;
 
-            var sw = OpenStream(@"textfile2.txt");
+            var sw = OpenStream(@"textfile3.txt");
             if (sw is null)
             {
                 return Color.TIE;

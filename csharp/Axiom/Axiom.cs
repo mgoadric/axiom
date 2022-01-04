@@ -745,7 +745,7 @@ namespace Axiom
                      was.IsFree())
                 {
                     board.Remove(actualcube);
-                    Console.WriteLine("REMOVING CUBE!!!");
+                    //Console.WriteLine("REMOVING CUBE!!!");
                 }
             }
 

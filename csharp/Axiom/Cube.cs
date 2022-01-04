@@ -19,6 +19,8 @@ namespace Axiom
         private Dictionary<string, Cube> board;
         private Direction firstDome;
         private Direction secondDome;
+        private Direction firstSceptre;
+        private Direction secondSceptre;
 
         // Constructor
         public Cube(Direction d1, Direction d2, Color color)
@@ -40,6 +42,8 @@ namespace Axiom
 
             firstDome = d1;
             secondDome = d2;
+            firstSceptre = Direction.NONE;
+            secondSceptre = Direction.NONE;
         }
 
         public Cube(int x, int y, int z, Direction d1, Direction d2, Color color)
@@ -119,31 +123,12 @@ namespace Axiom
 
         public Direction FirstSceptre()
         {
-            foreach (Direction d in MyExtensions.validDirections)
-            {
-                if (faces[d] == Face.BLACK || faces[d] == Face.WHITE)
-                {
-                    return d;
-                }
-            }
-            return Direction.NONE;
+            return firstSceptre;
         }
 
         public Direction SecondSceptre()
         {
-            Direction first = FirstSceptre();
-            if (first == Direction.NONE)
-            {
-                return Direction.NONE;
-            }
-            foreach (Direction d in MyExtensions.validDirections)
-            {
-                if (first != d && (faces[d] == Face.BLACK || faces[d] == Face.WHITE))
-                {
-                    return d;
-                }
-            }
-            return Direction.NONE;
+            return secondSceptre;
         }
 
         public bool AddSceptre(Direction d, Face color)
@@ -151,6 +136,13 @@ namespace Axiom
             if (d != Direction.NONE && IsEmpty(d))
             {
                 faces[d] = color;
+                if (FirstSceptre() == Direction.NONE)
+                {
+                    firstSceptre = d;
+                } else
+                {
+                    secondSceptre = d;
+                }
                 return true;
             }
             return false;
@@ -162,6 +154,13 @@ namespace Axiom
             {
                 Face temp = faces[d];
                 faces[d] = Face.EMPTY;
+                if (SecondSceptre() != Direction.NONE)
+                {
+                    secondSceptre = Direction.NONE;
+                } else
+                {
+                    firstSceptre = Direction.NONE;
+                }
                 return temp;
             }
             // TODO throw exception??
