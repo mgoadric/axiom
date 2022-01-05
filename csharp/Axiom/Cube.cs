@@ -8,9 +8,9 @@ namespace Axiom
     public class Cube
     {
         // Constants
-        public static int X = 0;
-        public static int Y = 1;
-        public static int Z = 2;
+        public const int X = 0;
+        public const int Y = 1;
+        public const int Z = 2;
 
         // Data members
         private int[] location;
@@ -78,22 +78,7 @@ namespace Axiom
 
         public string GetName()
         {
-            return "" + GetX() + "," + GetY() + "," + GetZ();
-        }
-
-        public int GetX()
-        {
-            return location[X];
-        }
-
-        public int GetY()
-        {
-            return location[Y];
-        }
-
-        public int GetZ()
-        {
-            return location[Z];
+            return "" + location[X] + "," + location[Y] + "," + location[Z];
         }
 
         public Color GetColor()
@@ -207,7 +192,7 @@ namespace Axiom
 
         public bool HasNeighbor(int dx, int dy, int dz)
         {
-            return board.ContainsKey("" + (GetX() + dx) + "," + (GetY() + dy) + "," + (GetZ() + dz));
+            return board.ContainsKey("" + (location[X] + dx) + "," + (location[Y] + dy) + "," + (location[Z] + dz));
         }
 
         public Cube GetNeighbor(Direction d)
@@ -220,17 +205,17 @@ namespace Axiom
             switch (d)
             {
                 case Direction.ZUP:
-                    return "" + GetX() + "," + GetY() + "," + (GetZ() + delta);
+                    return "" + location[X] + "," + location[Y] + "," + (location[Z] + delta);
                 case Direction.ZDOWN:
-                    return "" + GetX() + "," + GetY() + "," + (GetZ() - delta);
+                    return "" + location[X] + "," + location[Y] + "," + (location[Z] - delta);
                 case Direction.YUP:
-                    return "" + GetX() + "," + (GetY() + delta) + "," + GetZ();
+                    return "" + location[X] + "," + (location[Y] + delta) + "," + location[Z];
                 case Direction.YDOWN:
-                    return "" + GetX() + "," + (GetY() - delta) + "," + GetZ();
+                    return "" + location[X] + "," + (location[Y] - delta) + "," + location[Z];
                 case Direction.XUP:
-                    return "" + (GetX() + delta) + "," + GetY() + "," + GetZ();
+                    return "" + (location[X] + delta) + "," + location[Y] + "," + location[Z];
                 case Direction.XDOWN:
-                    return "" + (GetX() - delta) + "," + GetY() + "," + GetZ();
+                    return "" + (location[X] - delta) + "," + location[Y] + "," + location[Z];
                 default:
                     return null;
             }
@@ -238,7 +223,7 @@ namespace Axiom
 
         public Cube GetNeighbor(int dx, int dy, int dz)
         {
-            return board["" + (GetX() + dx) + "," + (GetY() + dy) + "," + (GetZ() + dz)];
+            return board["" + (location[X] + dx) + "," + (location[Y] + dy) + "," + (location[Z] + dz)];
         }
 
         public List<Direction> FreeFaces()
