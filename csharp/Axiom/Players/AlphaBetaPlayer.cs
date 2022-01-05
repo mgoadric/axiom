@@ -49,6 +49,7 @@ namespace Axiom
                     move = m;
                     score = s[0];
                 }
+                alpha = (int)Math.Max(alpha, s[0]);
             }
             return move;
         }
@@ -60,8 +61,7 @@ namespace Axiom
             //    Returns (score, oppMove)
             if (board.GameOver())
             {
-                int[] t = { turn.Score(board), -1 };
-                return t;
+                return new int[]{ turn.Score(board), -1 };
             }
             int[] s = { int.MinValue, -1 };
             foreach (int m in board.LegalMoves(this))
