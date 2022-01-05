@@ -167,8 +167,51 @@ namespace Axiom
 
         public int Heuristic(Color color)
         {
-            return FreeCubes(color) + NumCubes(color) -
-                (FreeCubes(players[color].Opp) + NumCubes(players[color].Opp));
+            return AllFreeAndNumCubes(color);
+        }
+
+
+        private int AllFreeAndNumCubes(Color color)
+        {
+            int count = 0;
+            foreach (Cube c in board.Values)
+            {
+                if (c.GetColor() == color)
+                {
+                    count++;
+                    if (c.IsFree())
+                    {
+                        count++;
+                    }
+                } else
+                {
+                    count--;
+                    if (c.IsFree())
+                    {
+                        count--;
+                    }
+                }
+                
+            }
+            return count;
+        }
+
+
+        private int FreeAndNumCubes(Color color)
+        {
+            int count = 0;
+            foreach (Cube c in board.Values)
+            {
+                if (c.GetColor() == color)
+                {
+                    count++;
+                    if (c.IsFree())
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
         }
 
         // return the number of free cubes of the asking player
